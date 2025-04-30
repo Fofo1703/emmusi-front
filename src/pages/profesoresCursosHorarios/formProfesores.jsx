@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { insertarProfesor } from "../../services/profesoresServices";
-import InputConValidacion from "../../components/InputConValidacion";
+import InputConValidacion from "../../components/inputConValidacion";
 
 export default function FormProfesores() {
   const [formData, setFormData] = useState({

@@ -4,6 +4,7 @@ import Login from "../pages/login/login";
 import FormStudent from "../pages/estudiantes/formEstudiante";
 import ProtectedRoute from "../routes/ProtectedRoute";
 import FormProfesoresCursosHorarios from "../pages/profesoresCursosHorarios/profesoresCursosHorarios";
+import Navbar from "../components/navbar/navbar";
 
 const LOGOUT_TIME = 30 * 60 * 1000; // 30 minutos en milisegundos
 
@@ -47,6 +48,7 @@ const PublicRoutes = () => {
         <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
           <Route path="/estudiantes" element={<FormStudent />} />
           <Route path="/profesoresCursosHorarios" element={<FormProfesoresCursosHorarios />} />
+          <Route path="/navbar" element={<Navbar />} />
         </Route>
       </Routes>
     </Router>

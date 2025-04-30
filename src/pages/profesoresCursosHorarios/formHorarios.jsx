@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { insertarProfesor } from "../../services/profesoresServices";
-import InputConValidacion from "../../components/InputConValidacion";
+import InputConValidacion from "../../components/inputConValidacion";
+import SelectConValidacion from "../../components/selectConValidacion";
+import InputHoraConValidacion from "../../components/inputHoraConValidacion";
 
 export default function FormHorarios() {
   const [formData, setFormData] = useState({
@@ -89,56 +91,52 @@ export default function FormHorarios() {
               error={errors.profe} // Pasamos el error aquí
             />
 
-            <InputConValidacion
+            <SelectConValidacion
               id="dia"
               name="dia"
-              label="Dia"
+              label="Día"
               value={formData.dia}
               onChange={handleChange}
-              placeholder="Ingrese el dia"
               requerido
-              validacion="texto"
-              inputProps={{
-                maxLength: 50,
-              }}
-              inputClassName="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              options={[
+                "Lunes",
+                "Martes",
+                "Miércoles",
+                "Jueves",
+                "Viernes",
+                "Sábado",
+                "Domingo",
+              ]}
+              selectClassName="text-sm"
               labelClassName="block text-gray-700 text-sm font-bold mb-2"
-              error={errors.dia} // Pasamos el error aquí
+              error={errors.dia}
             />
 
-            <InputConValidacion
+            <InputHoraConValidacion
               id="horaInicio"
               name="horaInicio"
-              label="HoraInicio"
+              label="Hora de Inicio"
               value={formData.horaInicio}
               onChange={handleChange}
-              placeholder="Ingrese la hora de inicio"
               requerido
-              validacion="texto"
-              inputProps={{
-                maxLength: 50,
-              }}
-              inputClassName="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              inputClassName="text-sm"
               labelClassName="block text-gray-700 text-sm font-bold mb-2"
-              error={errors.horaInicio} // Pasamos el error aquí
+              error={errors.horaInicio}
             />
 
-            <InputConValidacion
+
+            <InputHoraConValidacion
               id="horaFin"
               name="horaFin"
-              label="HoraFin"
+              label="Hora de Fin"
               value={formData.horaFin}
               onChange={handleChange}
-              placeholder="Ingrese la hora del fin"
               requerido
-              validacion="texto"
-              inputProps={{
-                maxLength: 50,
-              }}
-              inputClassName="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              inputClassName="text-sm"
               labelClassName="block text-gray-700 text-sm font-bold mb-2"
-              error={errors.horaFin} // Pasamos el error aquí
+              error={errors.horaFin}
             />
+
 
             <InputConValidacion
               id="ciclo"

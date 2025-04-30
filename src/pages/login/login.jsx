@@ -18,7 +18,7 @@ export default function Login({ setIsAuthenticated }) {
 
     if (result.success) {
       setIsAuthenticated(true); // <-- activar sesión
-      navigate("/estudiantes"); // redirigir
+      navigate("/navbar"); // redirigir
     } else {
       alert(result.message);
     }

@@ -16,10 +16,11 @@ export default function Navbar() {
 
                     <li className="p-3 hover:bg-sky-400 hover:text-white rounded-md transition-all cursor-pointer"><Link to="/estudiantes">Estudiantes</Link></li>
                     <li className="p-3 hover:bg-sky-400 hover:text-white rounded-md transition-all cursor-pointer"><Link to="/profesoresCursosHorarios">Formularios</Link></li>
-                    <li className="p-3 hover:bg-sky-400 hover:text-white rounded-md transition-all cursor-pointer">Services</li>
+                    <li className="p-3 hover:bg-sky-400 hover:text-white rounded-md transition-all cursor-pointer"><Link to="/estudiantes/listaEstudiantes">Lista</Link></li>
                     <li className="p-3 hover:bg-sky-400 hover:text-white rounded-md transition-all cursor-pointer">Contact</li>
 
                 </ul>
+
                 <i className="bx bx-menu xl:hidden block text-5xl cursor-pointer" onClick={() => setIsMenuOpen(!isMenuOpen)}></i>
 
                 <div className={`absolute xl:hidden top-24 left-0 w-full bg-white flex flex-col items-center 

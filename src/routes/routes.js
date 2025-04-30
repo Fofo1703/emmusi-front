@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "../pages/login/login";
-import FormStudent from "../pages/students/formStudent";
+import FormStudent from "../pages/estudiantes/formEstudiante";
 import ProtectedRoute from "../routes/ProtectedRoute";
+import FormProfesoresCursosHorarios from "../pages/profesoresCursosHorarios/profesoresCursosHorarios";
 
 const LOGOUT_TIME = 30 * 60 * 1000; // 30 minutos en milisegundos
 
@@ -45,6 +46,7 @@ const PublicRoutes = () => {
         <Route path="/" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
         <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
           <Route path="/estudiantes" element={<FormStudent />} />
+          <Route path="/profesoresCursosHorarios" element={<FormProfesoresCursosHorarios />} />
         </Route>
       </Routes>
     </Router>

@@ -1,9 +1,9 @@
 import axios from "axios";
 
-import { GET_ALL_STUDENTS, GET_ONE_STUDENT, INSERT_STUDENT, UPDATE_STUDENT, DELETE_STUDENT } from "../assets/Api/apiLinks";
+import { OBTENER_ESTUDIANTES, OBTENER_UN_ESTUDIANTE, INSERTAR_ESTUDIANTE, ACTUALIZAR_ESTUDIANTE, ELIMINAR_ESTUDIANTE } from "../assets/Api/apiLinks";
 
-export async function getEstudiantes() {
-    const options = { method: 'GET', withCredentials: false, url: GET_ALL_STUDENTS };
+export async function obtenerEstudiantes() {
+    const options = { method: 'GET', withCredentials: false, url: OBTENER_ESTUDIANTES };
 
     return await axios.request(options).then(function (response) {
         return response.data;
@@ -12,11 +12,11 @@ export async function getEstudiantes() {
     });
 }
 
-export async function getOneEstudiante(id) {
+export async function obtenerUnEstudiante(id) {
     const options = {
         method: "GET",
         withCredentials: false,
-        url: GET_ONE_STUDENT + id,
+        url: OBTENER_UN_ESTUDIANTE + id,
     };
 
     return await axios
@@ -29,13 +29,13 @@ export async function getOneEstudiante(id) {
         });
 }
 
-export async function postEstudiante(estudiante) {
+export async function insertarEstudiante(estudiante) {
     console.log("Enviando estudiante:", estudiante);
 
     const options = {
         method: "POST",
         withCredentials: false,
-        url: INSERT_STUDENT,
+        url: INSERTAR_ESTUDIANTE,
         data: estudiante,
     };
 
@@ -52,8 +52,8 @@ export async function postEstudiante(estudiante) {
 }
 
 
-export async function updateEstudiante(estudiante) {
-    const options = { method: "POST", withCredentials: false, url: UPDATE_STUDENT, data: estudiante };
+export async function actualizarEstudiante(estudiante) {
+    const options = { method: "POST", withCredentials: false, url: ACTUALIZAR_ESTUDIANTE, data: estudiante };
 
     return await axios
         .request(options)
@@ -65,8 +65,8 @@ export async function updateEstudiante(estudiante) {
         });
 }
 
-export async function deleteEstudiante(id) {
-    const options = { method: "DELETE", withCredentials: false, url: DELETE_STUDENT + id };
+export async function eliminarEstudiante(id) {
+    const options = { method: "DELETE", withCredentials: false, url: ELIMINAR_ESTUDIANTE + id };
 
     return await axios
         .request(options).then(function (response) {

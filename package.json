@@ -13,8 +13,6 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.8.4",
     "boxicons": "^2.1.4",
-    "datatables.net-dt": "^2.3.0",
-    "datatables.net-react": "^1.0.1",
     "jspdf": "^3.0.1",
     "jspdf-autotable": "^5.0.2",
     "react": "^19.1.0",

@@ -43,11 +43,11 @@ export default function FormProfesores() {
   return (
     <>
       <div className="h-auto flex flex-col items-center justify-center text-center ">
-        <p className="text-5xl font-semibold mb-12 mt-12 lg:mt-0">Formulario de Profesores</p>
+        <p className="text-5xl font-semibold mb-12 mt-12 ">Formulario de Profesores</p>
         <div className="w-full flex items-center justify-center">
           <form
             onSubmit={handleSubmit}
-            className=" bg-white px-8 rounded-3xl border-2"
+            className=" bg-white px-10 py-10 rounded-3xl border-2"
           >
             <InputConValidacion
               id="nombre"

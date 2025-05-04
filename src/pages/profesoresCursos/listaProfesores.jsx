@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { Button, Stack, Box, Typography, TextField } from '@mui/material';
-import { obtenerEstudiantes } from '../../services/estudianteServices';
+import { obtenerProfesores } from '../../services/profesoresServices';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -10,7 +10,7 @@ import Navbar from '../../components/navbar/navbar';
 // autoTable(jsPDF.API); // <- Registro del plugin en jsPDF
 
 
-export default function ListaEstudiantes() {
+export default function ListaProfesores() {
   const [rows, setRows] = useState([]);
   const [filterText, setFilterText] = useState('');
   const [paginationModel, setPaginationModel] = useState({
@@ -19,34 +19,30 @@ export default function ListaEstudiantes() {
   });
 
   const columns = [
-    { field: 'cedula', headerName: 'Cédula', flex: 1 },
     { field: 'nombre', headerName: 'Nombre', flex: 1 },
-    { field: 'telefono', headerName: 'Teléfono', flex: 1 },
-    { field: 'especialidad', headerName: 'Especialidad', flex: 1 },
-    { field: 'subespecialidad', headerName: 'Subespecialidad', flex: 1 },
   ];
 
   useEffect(() => {
-    const fetchEstudiantes = async () => {
+    const fetchProfesores = async () => {
       try {
-        const data = await obtenerEstudiantes();
-        const estudiantesConId = data.map((item, index) => ({        
+        const data = await obtenerProfesores();
+        const profesoresConId = data.map((item, index) => ({        
           ...item,
           id: item.id || index,
         }));
-        setRows(estudiantesConId);
+        setRows(profesoresConId);
       } catch (error) {
-        console.error('Error al obtener estudiantes:', error);
+        console.error('Error al obtener profesores:', error);
       }
     };
 
-    fetchEstudiantes();
+    fetchProfesores();
   }, []);
 
   const filteredRows = useMemo(() => {
     const normalizedFilter = filterText.toLowerCase();
     return rows.filter(row =>
-      [row.cedula, row.nombre, row.telefono, row.especialidad, row.subespecialidad]
+      [row.nombre]
         .some(val => (val || '').toLowerCase().includes(normalizedFilter))
     );
   }, [rows, filterText]);
@@ -54,28 +50,24 @@ export default function ListaEstudiantes() {
   const exportExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(filteredRows);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Estudiantes');
-    XLSX.writeFile(workbook, 'estudiantes.xlsx');
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Profesores');
+    XLSX.writeFile(workbook, 'profesores.xlsx');
   };
 
   const exportPDF = () => {
     const doc = new jsPDF();
 
-    doc.text('Lista de Estudiantes', 14, 10);
+    doc.text('Lista de Profesores', 14, 10);
 
     autoTable(doc, {
-      head: [['Cédula', 'Nombre', 'Teléfono', 'Especialidad', 'Subespecialidad']],
+      head: [['Nombre',]],
       body: filteredRows.map(row => [
-        row.cedula,
         row.nombre,
-        row.telefono,
-        row.especialidad,
-        row.subespecialidad,
       ]),
       startY: 20,
     });
 
-    doc.save('estudiantes.pdf');
+    doc.save('profesores.pdf');
   };
 
   return (
@@ -84,7 +76,7 @@ export default function ListaEstudiantes() {
       <div className='z-0'>
         <Box sx={{ width: '100%', padding: 2 }}>
           <Typography variant="h5" sx={{ mb: 2 }}>
-            Lista de Estudiantes
+            Lista de Profesores
           </Typography>
 
           <Stack direction="row" spacing={2} sx={{ mb: 2 }}>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { insertarProfesor } from "../../services/profesoresServices";
+import { insertarCurso } from "../../services/cursosServices"; 
 import InputConValidacion from "../../components/inputConValidacion";
 
 export default function FormCursos() {
@@ -30,7 +30,7 @@ export default function FormCursos() {
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
     } else {
-      insertarProfesor(formData)
+      insertarCurso(formData)
         .then((response) => {
           alert(response);
         })
@@ -42,12 +42,12 @@ export default function FormCursos() {
 
   return (
     <>
-      <div className="h-auto flex flex-col items-center justify-center text-center mt-16 ">
-        <p className="text-5xl font-semibold mb-12">Formulario de Cursos</p>
+      <div className="h-auto flex flex-col items-center justify-center text-center ">
+        <p className="text-5xl font-semibold mb-12 mt-12 ">Formulario de Cursos</p>
         <div className="w-full flex items-center justify-center">
           <form
             onSubmit={handleSubmit}
-            className=" bg-white px-8 rounded-3xl border-2"
+            className=" bg-white px-10 py-10 rounded-3xl border-2"
           >
             <InputConValidacion
               id="nombre"

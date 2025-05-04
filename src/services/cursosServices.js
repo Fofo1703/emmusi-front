@@ -1,9 +1,9 @@
 import axios from "axios";
 
-import { OBTENER_PROFESORES, OBTENER_UN_PROFESOR, INSERTAR_PROFESOR, ACTUALIZAR_PROFESOR, ELIMINAR_PROFESOR } from "../assets/Api/apiLinks";
+import { OBTENER_CURSOS, OBTENER_UN_CURSO, INSERTAR_CURSO, ACTUALIZAR_CURSO, ELIMINAR_CURSO } from "../assets/Api/apiLinks";
 
-export async function obtenerProfesores() {
-    const options = { method: 'GET', withCredentials: false, url: OBTENER_PROFESORES };
+export async function obtenerCursos() {
+    const options = { method: 'GET', withCredentials: false, url: OBTENER_CURSOS };
 
     return await axios.request(options).then(function (response) {
         return response.data;
@@ -12,11 +12,11 @@ export async function obtenerProfesores() {
     });
 }
 
-export async function obtenerUnProfesor(id) {
+export async function obtenerUnCurso(id) {
     const options = {
         method: "GET",
         withCredentials: false,
-        url: OBTENER_UN_PROFESOR + id,
+        url: OBTENER_UN_CURSO + id,
     };
 
     return await axios
@@ -29,14 +29,14 @@ export async function obtenerUnProfesor(id) {
         });
 }
 
-export async function insertarProfesor(profesore) {
-    console.log("Enviando profesores:", profesore);
+export async function insertarCurso(curso) {
+    console.log("Enviando profesores:", curso);
 
     const options = {
         method: "POST",
         withCredentials: false,
-        url: INSERTAR_PROFESOR,
-        data: profesore,
+        url: INSERTAR_CURSO,
+        data: curso,
     };
 
     return await axios
@@ -52,8 +52,8 @@ export async function insertarProfesor(profesore) {
 }
 
 
-export async function actualizarProfesor(profesore) {
-    const options = { method: "POST", withCredentials: false, url: ACTUALIZAR_PROFESOR, data: profesore };
+export async function actualizarCurso(curso) {
+    const options = { method: "POST", withCredentials: false, url: ACTUALIZAR_CURSO, data: curso };
 
     return await axios
         .request(options)
@@ -66,7 +66,7 @@ export async function actualizarProfesor(profesore) {
 }
 
 export async function eliminarProfesor(id) {
-    const options = { method: "DELETE", withCredentials: false, url: ELIMINAR_PROFESOR + id };
+    const options = { method: "DELETE", withCredentials: false, url: ELIMINAR_CURSO + id };
 
     return await axios
         .request(options).then(function (response) {

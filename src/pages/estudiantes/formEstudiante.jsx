@@ -3,7 +3,7 @@ import { insertarEstudiante } from "../../services/estudianteServices";
 import InputConValidacion from "../../components/inputConValidacion"; // Ruta ajustada si es necesario
 import Navbar from "../../components/navbar/navbar";
 
-export default function FormStudent() {
+export default function FormEstudiante() {
   const [formData, setFormData] = useState({
     cedula: "",
     nombre: "",

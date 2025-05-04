@@ -1,9 +1,9 @@
 import axios from "axios";
 
-import { OBTENER_PROFESORES, OBTENER_UN_PROFESOR, INSERTAR_PROFESOR, ACTUALIZAR_PROFESOR, ELIMINAR_PROFESOR } from "../assets/Api/apiLinks";
+import { OBTENER_HORARIOS, OBTENER_UN_HORARIO, INSERTAR_HORARIO, ACTUALIZAR_HORARIO, ELIMINAR_HORARIO } from "../assets/Api/apiLinks";
 
-export async function obtenerProfesores() {
-    const options = { method: 'GET', withCredentials: false, url: OBTENER_PROFESORES };
+export async function obtenerHorarios() {
+    const options = { method: 'GET', withCredentials: false, url: OBTENER_HORARIOS };
 
     return await axios.request(options).then(function (response) {
         return response.data;
@@ -12,11 +12,11 @@ export async function obtenerProfesores() {
     });
 }
 
-export async function obtenerUnProfesor(id) {
+export async function obtenerUnHorario(id) {
     const options = {
         method: "GET",
         withCredentials: false,
-        url: OBTENER_UN_PROFESOR + id,
+        url: OBTENER_UN_HORARIO + id,
     };
 
     return await axios
@@ -29,14 +29,14 @@ export async function obtenerUnProfesor(id) {
         });
 }
 
-export async function insertarProfesor(profesore) {
-    console.log("Enviando profesores:", profesore);
+export async function insertarHorario(horario) {
+    console.log("Enviando profesores:", horario);
 
     const options = {
         method: "POST",
         withCredentials: false,
-        url: INSERTAR_PROFESOR,
-        data: profesore,
+        url: INSERTAR_HORARIO,
+        data: horario,
     };
 
     return await axios
@@ -52,8 +52,8 @@ export async function insertarProfesor(profesore) {
 }
 
 
-export async function actualizarProfesor(profesore) {
-    const options = { method: "POST", withCredentials: false, url: ACTUALIZAR_PROFESOR, data: profesore };
+export async function actualizarHorario(horario) {
+    const options = { method: "POST", withCredentials: false, url: ACTUALIZAR_HORARIO, data: horario };
 
     return await axios
         .request(options)
@@ -65,8 +65,8 @@ export async function actualizarProfesor(profesore) {
         });
 }
 
-export async function eliminarProfesor(id) {
-    const options = { method: "DELETE", withCredentials: false, url: ELIMINAR_PROFESOR + id };
+export async function eliminarHorario(id) {
+    const options = { method: "DELETE", withCredentials: false, url: ELIMINAR_HORARIO + id };
 
     return await axios
         .request(options).then(function (response) {

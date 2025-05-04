@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { Button, Stack, Box, Typography, TextField } from '@mui/material';
-import { obtenerEstudiantes } from '../../services/estudianteServices';
+import { obtenerHorarios } from '../../services/horariosServices'; 
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -10,7 +10,7 @@ import Navbar from '../../components/navbar/navbar';
 // autoTable(jsPDF.API); // <- Registro del plugin en jsPDF
 
 
-export default function ListaEstudiantes() {
+export default function ListaHorarios() {
   const [rows, setRows] = useState([]);
   const [filterText, setFilterText] = useState('');
   const [paginationModel, setPaginationModel] = useState({
@@ -19,28 +19,29 @@ export default function ListaEstudiantes() {
   });
 
   const columns = [
-    { field: 'cedula', headerName: 'Cédula', flex: 1 },
-    { field: 'nombre', headerName: 'Nombre', flex: 1 },
-    { field: 'telefono', headerName: 'Teléfono', flex: 1 },
-    { field: 'especialidad', headerName: 'Especialidad', flex: 1 },
-    { field: 'subespecialidad', headerName: 'Subespecialidad', flex: 1 },
+    { field: 'curso', headerName: 'Curso', flex: 1 },
+    { field: 'profe', headerName: 'Profe', flex: 1 },
+    { field: 'dia', headerName: 'Dia', flex: 1 },
+    { field: 'horaInicio', headerName: 'Hora Inicio', flex: 1 },
+    { field: 'horaFin', headerName: 'Hora Fin', flex: 1 },
+    { field: 'ciclo', headerName: 'Ciclo', flex: 1 },
   ];
 
   useEffect(() => {
-    const fetchEstudiantes = async () => {
+    const fetchHorarios = async () => {
       try {
-        const data = await obtenerEstudiantes();
+        const data = await obtenerHorarios();
         const estudiantesConId = data.map((item, index) => ({        
           ...item,
           id: item.id || index,
         }));
         setRows(estudiantesConId);
       } catch (error) {
-        console.error('Error al obtener estudiantes:', error);
+        console.error('Error al obtener horarios:', error);
       }
     };
 
-    fetchEstudiantes();
+    fetchHorarios();
   }, []);
 
   const filteredRows = useMemo(() => {
@@ -54,28 +55,29 @@ export default function ListaEstudiantes() {
   const exportExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(filteredRows);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Estudiantes');
-    XLSX.writeFile(workbook, 'estudiantes.xlsx');
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Horarios');
+    XLSX.writeFile(workbook, 'horarios.xlsx');
   };
 
   const exportPDF = () => {
     const doc = new jsPDF();
 
-    doc.text('Lista de Estudiantes', 14, 10);
+    doc.text('Lista de Horarios', 14, 10);
 
     autoTable(doc, {
-      head: [['Cédula', 'Nombre', 'Teléfono', 'Especialidad', 'Subespecialidad']],
+      head: [['Curso', 'Profe', 'Dia', 'Hora Inicio', 'Hora Fin', 'Ciclo']],
       body: filteredRows.map(row => [
-        row.cedula,
-        row.nombre,
-        row.telefono,
-        row.especialidad,
-        row.subespecialidad,
+        row.curso,
+        row.profe,
+        row.dia,
+        row.horaInico,
+        row.horaFin,
+        row.ciclo,
       ]),
       startY: 20,
     });
 
-    doc.save('estudiantes.pdf');
+    doc.save('horarios.pdf');
   };
 
   return (
@@ -84,7 +86,7 @@ export default function ListaEstudiantes() {
       <div className='z-0'>
         <Box sx={{ width: '100%', padding: 2 }}>
           <Typography variant="h5" sx={{ mb: 2 }}>
-            Lista de Estudiantes
+            Lista de Horarios
           </Typography>
 
           <Stack direction="row" spacing={2} sx={{ mb: 2 }}>

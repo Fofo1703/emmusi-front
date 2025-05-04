@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "../pages/login/login";
-import FormStudent from "../pages/estudiantes/formEstudiante";
 import ProtectedRoute from "../routes/ProtectedRoute";
-import FormProfesoresCursosHorarios from "../pages/profesoresCursosHorarios/profesoresCursosHorarios";
-// import Navbar from "../components/navbar/navbar";
+import Login from "../pages/login/login";
 import ListaEstudiantes from "../pages/estudiantes/listaEstudiantes";
+import FormEstudiante from "../pages/estudiantes/formEstudiante";
+import ListaProfesores from "../pages/profesoresCursos/listaProfesores";
+import ListaCursos from "../pages/profesoresCursos/listaCursos";
+import FormProfesoresCursosHorarios from "../pages/profesoresCursos/FormsProfesoresCursos";
+import FormHorarios from "../pages/horarios/formHorarios";
+import ListaHorarios from "../pages/horarios/listaHorarios";
+
 
 const LOGOUT_TIME = 30 * 60 * 1000; // 30 minutos en milisegundos
 
@@ -47,11 +51,13 @@ const PublicRoutes = () => {
       <Routes>
         <Route path="/" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
         <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
-          <Route path="/estudiantes" element={<FormStudent />} />
-          <Route path="/profesoresCursosHorarios" element={<FormProfesoresCursosHorarios />} />
-          {/* <Route path="/navbar" element={<Navbar />} /> */}
           <Route path="/estudiantes/listaEstudiantes" element={<ListaEstudiantes />} />
-
+          <Route path="/estudiantes/registro" element={<FormEstudiante />} />
+          <Route path="/profesores/listaProfesores" element={<ListaProfesores />} />
+          <Route path="/formsProfesoresCursos/registro" element={<FormProfesoresCursosHorarios />} />
+          <Route path="/horarios/registro" element={<FormHorarios />} />
+          <Route path="/cursos/listaCursos" element={<ListaCursos />} />
+          <Route path="/horarios/listaHorarios" element={<ListaHorarios />} />
         </Route>
       </Routes>
     </Router>

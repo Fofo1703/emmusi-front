@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { insertarProfesor } from "../../services/profesoresServices";
+import { insertarHorario } from "../../services/horariosServices";
 import InputConValidacion from "../../components/inputConValidacion";
 import SelectConValidacion from "../../components/selectConValidacion";
 import InputHoraConValidacion from "../../components/inputHoraConValidacion";
+import Navbar from "../../components/navbar/navbar";
 
 export default function FormHorarios() {
   const [formData, setFormData] = useState({
@@ -37,25 +38,26 @@ export default function FormHorarios() {
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
     } else {
-      insertarProfesor(formData)
+      insertarHorario(formData)
         .then((response) => {
           alert(response);
         })
         .catch((error) => {
-          console.error("Error al registrar el estudiante:", error);
+          console.error("Error al registrar el horario:", error);
         });
     }
   };
 
   return (
     <>
+      <Navbar/>
       <div className="h-auto flex flex-col items-center justify-center text-center mt-16 sm:mt-3 ">
         <p className="text-5xl font-semibold mb-12">Formulario de Horarios</p>
 
         <div className="w-full flex items-center justify-center">
           <form
             onSubmit={handleSubmit}
-            className=" bg-white px-8 rounded-3xl border-2"
+            className=" bg-white px-10 py-6 rounded-3xl border-2"
           >
             <InputConValidacion
               id="curso"

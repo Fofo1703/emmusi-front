@@ -1,53 +1,55 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { DataGrid } from '@mui/x-data-grid';
-import { Button, Stack, Box, Typography, TextField } from '@mui/material';
-import { obtenerEstudiantes } from '../../services/estudianteServices';
+import { Button, Stack, Box, TextField } from '@mui/material';
+import { obtenerEstudiantes, eliminarEstudiante } from '../../services/estudianteServices';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import Navbar from '../../components/navbar/navbar';
+import { Link } from 'react-router-dom';
+import DataTable from 'react-data-table-component';
 
-// autoTable(jsPDF.API); // <- Registro del plugin en jsPDF
-
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SchoolIcon from '@mui/icons-material/School';
+import NotesIcon from '@mui/icons-material/Notes';
+import ListIcon from '@mui/icons-material/ListAlt';
 
 export default function ListaEstudiantes() {
   const [rows, setRows] = useState([]);
   const [filterText, setFilterText] = useState('');
-  const [paginationModel, setPaginationModel] = useState({
-    pageSize: 5,
-    page: 0,
-  });
 
-  const columns = [
-    { field: 'cedula', headerName: 'Cédula', flex: 1 },
-    { field: 'nombre', headerName: 'Nombre', flex: 1 },
-    { field: 'telefono', headerName: 'Teléfono', flex: 1 },
-    { field: 'especialidad', headerName: 'Especialidad', flex: 1 },
-    { field: 'subespecialidad', headerName: 'Subespecialidad', flex: 1 },
-  ];
+  const fetchEstudiantes = async () => {
+    try {
+      const data = await obtenerEstudiantes();
+      const estudiantesConId = data.map((item, index) => ({
+        ...item,
+        id: item.id || index,
+      }));
+      setRows(estudiantesConId);
+    } catch (error) {
+      console.error('Error al obtener estudiantes:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchEstudiantes = async () => {
-      try {
-        const data = await obtenerEstudiantes();
-        const estudiantesConId = data.map((item, index) => ({        
-          ...item,
-          id: item.id || index,
-        }));
-        setRows(estudiantesConId);
-      } catch (error) {
-        console.error('Error al obtener estudiantes:', error);
-      }
-    };
-
     fetchEstudiantes();
   }, []);
 
+  const handleEliminar = async (id) => {
+    const confirm = window.confirm('¿Estás seguro de que deseas eliminar este estudiante?');
+    if (!confirm) return;
+
+    const status = await eliminarEstudiante(id);
+    if (status === 200) {
+      fetchEstudiantes();
+    }
+  };
+
   const filteredRows = useMemo(() => {
-    const normalizedFilter = filterText.toLowerCase();
+    const normalized = filterText.toLowerCase();
     return rows.filter(row =>
       [row.cedula, row.nombre, row.telefono, row.especialidad, row.subespecialidad]
-        .some(val => (val || '').toLowerCase().includes(normalizedFilter))
+        .some(val => (val || '').toLowerCase().includes(normalized))
     );
   }, [rows, filterText]);
 
@@ -60,7 +62,6 @@ export default function ListaEstudiantes() {
 
   const exportPDF = () => {
     const doc = new jsPDF();
-
     doc.text('Lista de Estudiantes', 14, 10);
 
     autoTable(doc, {
@@ -78,14 +79,54 @@ export default function ListaEstudiantes() {
     doc.save('estudiantes.pdf');
   };
 
+  const columns = [
+    { name: 'Cédula', selector: row => row.cedula, sortable: true, wrap: true, minWidth: '100px', },
+    { name: 'Nombre', selector: row => row.nombre, sortable: true, wrap: true, minWidth: '150px', },
+    { name: 'Teléfono', selector: row => row.telefono, wrap: true, minWidth: '90px', },
+    { name: 'Especialidad', selector: row => row.especialidad, wrap: true, minWidth: '100px', },
+    { name: 'Subespecialidad', selector: row => row.subespecialidad, wrap: true, minWidth: '130px', },
+    {
+      name: 'Acciones', minWidth: '700px',
+      cell: row => (
+        <div className='flex flex-row gap-2 '>
+          <Link to={`/estudiantes/${row.id}/matricula`}>
+            <Button size="small" variant="outlined" startIcon={<SchoolIcon />}>Matricular</Button>
+          </Link>
+          <Link to={`/estudiantes/${row.id}/notas`}>
+            <Button size="small" variant="outlined" color="secondary" startIcon={<NotesIcon />}>Notas/Ausencias</Button>
+          </Link>
+          <Link to={`/estudiantes/${row.id}/cursos`}>
+            <Button size="small" variant="outlined" color="info" startIcon={<ListIcon />}>Cursos</Button>
+          </Link>
+          <Link to={`/estudiantes/registro?id=${row.id}`}>
+            <Button size="small" variant="contained" color="warning" startIcon={<EditIcon />}>Actualizar</Button>
+          </Link>
+          <Button
+            size="small"
+            variant="contained"
+            color="error"
+            onClick={() => handleEliminar(row.id)}
+            startIcon={<DeleteIcon />}
+          >
+            Eliminar
+          </Button>
+        </div>
+      ),
+    }
+  ];
+
   return (
     <>
       <Navbar />
-      <div className='z-0'>
-        <Box sx={{ width: '100%', padding: 2 }}>
-          <Typography variant="h5" sx={{ mb: 2 }}>
-            Lista de Estudiantes
-          </Typography>
+      <Box sx={{ padding: 2 }} className='z-0'>
+
+        <div className='w-fit m-auto'>
+
+          <Stack sx={{ mb: 2 }}>
+            <label className='text-4xl font-bold '>
+              Lista de Estudiantes
+            </label>
+          </Stack>
 
           <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
             <TextField
@@ -102,22 +143,27 @@ export default function ListaEstudiantes() {
               Exportar a PDF
             </Button>
           </Stack>
+        </div>
 
-          <Box sx={{ height: 500, width: '100%' }}>
-            <DataGrid
-              rows={filteredRows}
+
+
+        <div className="overflow-auto">
+          <Box sx={{ overflowX: 'auto' }} className="w-fit m-auto">
+            <DataTable
               columns={columns}
+              data={filteredRows}
               pagination
-              paginationMode="client"
-              paginationModel={paginationModel}
-              onPaginationModelChange={setPaginationModel}
-              pageSizeOptions={[5, 10]}
-              disableColumnMenu
-              autoHeight
+              fixedHeader
+              highlightOnHover
+              striped
+              responsive={false}
+              noDataComponent="No se encontraron estudiantes"
             />
           </Box>
-        </Box>
-      </div>
+        </div>
+
+
+      </Box>
     </>
   );
 }

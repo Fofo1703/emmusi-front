@@ -65,7 +65,7 @@ export async function actualizarCurso(curso) {
         });
 }
 
-export async function eliminarProfesor(id) {
+export async function eliminarCurso(id) {
     const options = { method: "DELETE", withCredentials: false, url: ELIMINAR_CURSO + id };
 
     return await axios

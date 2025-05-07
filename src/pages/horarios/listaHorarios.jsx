@@ -82,8 +82,8 @@ export default function ListaEstudiantes() {
         { name: 'Curso', selector: row => row.curso, sortable: true, wrap: true, minWidth: '150px' },
         { name: 'Profesor', selector: row => row.profe, sortable: true, wrap: true, minWidth: '150px' },
         { name: 'Día', selector: row => row.dia, sortable: true, wrap: true, minWidth: '100px', },
-        { name: 'Hora Inicio', selector: row => row.horaInicio, wrap: true, minWidth: '100px' },
-        { name: 'Hora Fin', selector: row => row.horaFin, wrap: true, minWidth: '100px' },
+        { name: 'Hora Inicio', selector: row => row.horaInicio, wrap: true, minWidth: '130px' },
+        { name: 'Hora Fin', selector: row => row.horaFin, wrap: true, minWidth: '120px' },
         { name: 'Ciclo', selector: row => row.ciclo, wrap: true, minWidth: '130px' },
         {
             name: 'Acciones', minWidth: '300px',
@@ -105,6 +105,21 @@ export default function ListaEstudiantes() {
             ),
         }
     ];
+
+    
+    const customStyles = {
+        headCells: {
+          style: {
+            fontSize: '18px', // Tamaño de texto para encabezados
+            fontWeight: 'bold',
+          },
+        },
+        cells: {
+          style: {
+            fontSize: '16px', // Tamaño de texto para celdas
+          },
+        },
+      };
 
     return (
         <>
@@ -146,6 +161,7 @@ export default function ListaEstudiantes() {
                             striped
                             responsive={false}
                             noDataComponent="No se encontraron horarios"
+                            customStyles={customStyles}
                         />
                     </Box>
                 </div>

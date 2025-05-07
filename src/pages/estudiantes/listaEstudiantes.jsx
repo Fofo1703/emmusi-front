@@ -115,6 +115,21 @@ export default function ListaEstudiantes() {
     }
   ];
 
+  
+  const customStyles = {
+    headCells: {
+      style: {
+        fontSize: '18px', // Tamaño de texto para encabezados
+        fontWeight: 'bold',
+      },
+    },
+    cells: {
+      style: {
+        fontSize: '16px', // Tamaño de texto para celdas
+      },
+    },
+  };
+
   return (
     <>
       <Navbar />
@@ -158,6 +173,7 @@ export default function ListaEstudiantes() {
               striped
               responsive={false}
               noDataComponent="No se encontraron estudiantes"
+              customStyles={customStyles}
             />
           </Box>
         </div>

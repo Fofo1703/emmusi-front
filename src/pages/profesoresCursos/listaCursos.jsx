@@ -98,17 +98,17 @@ export default function ListaEstudiantes() {
 
     const customStyles = {
         headCells: {
-          style: {
-            fontSize: '18px', // Tamaño de texto para encabezados
-            fontWeight: 'bold',
-          },
+            style: {
+                fontSize: '18px', // Tamaño de texto para encabezados
+                fontWeight: 'bold',
+            },
         },
         cells: {
-          style: {
-            fontSize: '16px', // Tamaño de texto para celdas
-          },
+            style: {
+                fontSize: '16px', // Tamaño de texto para celdas
+            },
         },
-      };
+    };
 
     return (
         <>
@@ -123,7 +123,7 @@ export default function ListaEstudiantes() {
                     </Stack>
 
 
-                    <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
+                    <div className='flex flex-col sm:flex-row gap-5 mb-5'>
                         <TextField
                             label="Buscar"
                             variant="outlined"
@@ -137,7 +137,7 @@ export default function ListaEstudiantes() {
                         <Button variant="contained" color="error" onClick={exportPDF}>
                             Exportar a PDF
                         </Button>
-                    </Stack>
+                    </div>
                 </div>
 
 

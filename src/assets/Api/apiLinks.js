@@ -11,9 +11,9 @@ const URL_HORARIOS = URL + 'horarios/';
 export const VALIDAR_CREDENCIALES = URL_USUARIOS + 'validarCredenciales';
 
 export const OBTENER_ESTUDIANTES = URL_ESTUDIANTES + 'getEstudiantes';
-export const OBTENER_UN_ESTUDIANTE = URL_ESTUDIANTES + 'getOneEstudiante/';
+export const OBTENER_UN_ESTUDIANTE = URL_ESTUDIANTES + 'getEstudiante/';
 export const INSERTAR_ESTUDIANTE = URL_ESTUDIANTES + 'insertEstudiante';
-export const ACTUALIZAR_ESTUDIANTE = URL_ESTUDIANTES + 'updateEstudiante';
+export const ACTUALIZAR_ESTUDIANTE = URL_ESTUDIANTES + 'updateEstudiante/';
 export const ELIMINAR_ESTUDIANTE = URL_ESTUDIANTES + 'deleteEstudiante/';
 
 export const OBTENER_PROFESORES = URL_PROFESORES + 'getProfesores';

@@ -19,18 +19,14 @@ export async function obtenerUnEstudiante(id) {
         url: OBTENER_UN_ESTUDIANTE + id,
     };
 
-    return await axios
-        .request(options)
-        .then(function (response) {
-            return response.data.data[0];
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+    return await axios.request(options).then(function (response) {
+        return response.data[0];
+    }).catch(function (error) {
+        console.error(error);
+    });
 }
 
 export async function insertarEstudiante(estudiante) {
-    console.log("Enviando estudiante:", estudiante);
 
     const options = {
         method: "POST",
@@ -52,16 +48,17 @@ export async function insertarEstudiante(estudiante) {
 }
 
 
-export async function actualizarEstudiante(estudiante) {
-    const options = { method: "POST", withCredentials: false, url: ACTUALIZAR_ESTUDIANTE, data: estudiante };
-
+export async function actualizarEstudiante(id,estudiante) {
+    const options = { method: "PUT", withCredentials: false, url: ACTUALIZAR_ESTUDIANTE + id, data: estudiante };
     return await axios
         .request(options)
-        .then(function (response) {
-            return response.data;
+        .then((response) => {
+            // Mostrar mensaje de éxito del backend
+            return response.data.message;
         })
-        .catch(function (error) {
-            console.log(error);
+        .catch((error) => {
+            // Capturar el mensaje del backend en caso de error
+            return error.response?.data?.message;
         });
 }
 
@@ -69,9 +66,13 @@ export async function eliminarEstudiante(id) {
     const options = { method: "DELETE", withCredentials: false, url: ELIMINAR_ESTUDIANTE + id };
 
     return await axios
-        .request(options).then(function (response) {
-            return response.status;
-        }).catch(function (error) {
-            console.log(error);
+        .request(options)
+        .then((response) => {
+            // Mostrar mensaje de éxito del backend
+            return response.data.message;
+        })
+        .catch((error) => {
+            // Capturar el mensaje del backend en caso de error
+            return error.response?.data?.message;
         });
 }

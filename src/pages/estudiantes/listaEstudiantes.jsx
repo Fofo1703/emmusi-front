@@ -80,15 +80,16 @@ export default function ListaEstudiantes() {
   };
 
   const columns = [
-    { name: 'Cédula', selector: row => row.cedula, sortable: true, wrap: true, minWidth: '100px', },
-    { name: 'Nombre', selector: row => row.nombre, sortable: true, wrap: true, minWidth: '150px', },
-    { name: 'Teléfono', selector: row => row.telefono, wrap: true, minWidth: '90px', },
-    { name: 'Especialidad', selector: row => row.especialidad, wrap: true, minWidth: '100px', },
-    { name: 'Subespecialidad', selector: row => row.subespecialidad, wrap: true, minWidth: '130px', },
+    { name: 'Cédula', selector: row => row.cedula, sortable: true, wrap: true, style: { minWidth: '110px' } },
+    { name: 'Nombre', selector: row => row.nombre, sortable: true, wrap: true, style: { minWidth: '200px' } },
+    { name: 'Teléfono', selector: row => row.telefono, wrap: true, style: { minWidth: '90px' } },
+    { name: 'Especialidad', selector: row => row.especialidad, wrap: true, style: { minWidth: '140px' } },
+    { name: 'Subespecialidad', selector: row => row.subespecialidad, wrap: true, style: { minWidth: '170px' } },
     {
-      name: 'Acciones', minWidth: '700px',
+      name: 'Acciones',
+      style: { minWidth: '700px' },
       cell: row => (
-        <div className='flex flex-row gap-2 '>
+        <div className='flex flex-row gap-2'>
           <Link to={`/estudiantes/${row.id}/matricula`}>
             <Button size="small" variant="outlined" startIcon={<SchoolIcon />}>Matricular</Button>
           </Link>
@@ -115,17 +116,16 @@ export default function ListaEstudiantes() {
     }
   ];
 
-  
   const customStyles = {
     headCells: {
       style: {
-        fontSize: '18px', // Tamaño de texto para encabezados
+        fontSize: '18px',
         fontWeight: 'bold',
       },
     },
     cells: {
       style: {
-        fontSize: '16px', // Tamaño de texto para celdas
+        fontSize: '16px',
       },
     },
   };
@@ -134,16 +134,11 @@ export default function ListaEstudiantes() {
     <>
       <Navbar />
       <Box sx={{ padding: 2 }} className='z-0'>
-
         <div className='w-fit m-auto'>
-
           <Stack sx={{ mb: 2 }}>
-            <label className='text-4xl font-bold '>
-              Lista de Estudiantes
-            </label>
+            <label className='text-4xl font-bold'>Lista de Estudiantes</label>
           </Stack>
-
-          <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
+          <div className='flex flex-col sm:flex-row gap-5 mb-5'>
             <TextField
               label="Buscar"
               variant="outlined"
@@ -157,10 +152,8 @@ export default function ListaEstudiantes() {
             <Button variant="contained" color="error" onClick={exportPDF}>
               Exportar a PDF
             </Button>
-          </Stack>
+          </div>
         </div>
-
-
 
         <div className="overflow-auto">
           <Box sx={{ overflowX: 'auto' }} className="w-fit m-auto">
@@ -177,9 +170,8 @@ export default function ListaEstudiantes() {
             />
           </Box>
         </div>
-
-
       </Box>
     </>
   );
 }
+

@@ -27,6 +27,9 @@ export default function InputConValidacion({
     if (validacion === "alfanumerico" && !/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]*$/.test(value)) {
       return false; // Solo letras, números, espacios y caracteres con tildes y ñ
     }
+    if (validacion === "ciclo" && !/^[I0-9-\s]*$/.test(value)) {
+      return false; // Solo letras, números, espacios y caracteres con tildes y ñ
+    }
     return true;
   };
 

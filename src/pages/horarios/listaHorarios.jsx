@@ -11,7 +11,7 @@ import DataTable from 'react-data-table-component';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-export default function ListaEstudiantes() {
+export default function ListaHorarios() {
     const [rows, setRows] = useState([]);
     const [filterText, setFilterText] = useState('');
 
@@ -45,7 +45,7 @@ export default function ListaEstudiantes() {
     const filteredRows = useMemo(() => {
         const normalizedFilter = filterText.toLowerCase();
         return rows.filter(row =>
-            [row.curso, row.profe, row.dia, row.horaInicio, row.horaFin, row.ciclo]
+            [row.curso, row.profesor, row.dia, row.horaInicio, row.horaFin, row.ciclo]
                 .some(val => (val || '').toLowerCase().includes(normalizedFilter))
         );
     }, [rows, filterText]);
@@ -63,10 +63,10 @@ export default function ListaEstudiantes() {
         doc.text('Lista de Horarios', 14, 10);
 
         autoTable(doc, {
-            head: [['Curso', 'Profe', 'Dia', 'Hora Inicio', 'Hora Fin', 'Ciclo']],
+            head: [['Curso', 'Profesor', 'Dia', 'Hora Inicio', 'Hora Fin', 'Ciclo']],
             body: filteredRows.map(row => [
                 row.curso,
-                row.profe,
+                row.profesor,
                 row.dia,
                 row.horaInico,
                 row.horaFin,
@@ -80,13 +80,13 @@ export default function ListaEstudiantes() {
 
     const columns = [
         { name: 'Curso', selector: row => row.curso, sortable: true, wrap: true, minWidth: '150px' },
-        { name: 'Profesor', selector: row => row.profe, sortable: true, wrap: true, minWidth: '150px' },
-        { name: 'Día', selector: row => row.dia, sortable: true, wrap: true, minWidth: '100px', },
-        { name: 'Hora Inicio', selector: row => row.horaInicio, wrap: true, minWidth: '130px' },
-        { name: 'Hora Fin', selector: row => row.horaFin, wrap: true, minWidth: '120px' },
-        { name: 'Ciclo', selector: row => row.ciclo, wrap: true, minWidth: '130px' },
+        { name: 'Profesor', selector: row => row.profesor, sortable: true, wrap: true, minWidth: '150px' },
+        { name: 'Día', selector: row => row.dia, sortable: true, wrap: true, minWidth: '100px'},
+        { name: 'Hora Inicio', selector: row => row.horaInicio, wrap: true, minWidth: '130px'},
+        { name: 'Hora Fin', selector: row => row.horaFin, wrap: true, minWidth: '120px'},
+        { name: 'Ciclo', selector: row => row.ciclo, wrap: true,  minWidth: '130px' },
         {
-            name: 'Acciones', minWidth: '300px',
+            name: 'Acciones',  minWidth: '300px',
             cell: row => (
                 <div className='flex flex-row gap-2 '>
                     <Link to={`/horarios/registro?id=${row.id}`}>

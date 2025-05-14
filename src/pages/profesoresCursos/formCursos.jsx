@@ -1,41 +1,77 @@
-import { useState } from "react";
-import { insertarCurso } from "../../services/cursosServices"; 
+import { useState, useEffect } from "react";
+import { insertarCurso, obtenerUnCurso, actualizarCurso } from "../../services/cursosServices"
 import InputConValidacion from "../../components/inputConValidacion";
 
-export default function FormCursos() {
+export default function FormCursos({ id }) {
   const [formData, setFormData] = useState({
     nombre: "",
   });
 
   const [errors, setErrors] = useState({});
 
+  useEffect(() => {
+
+    if (id) {
+      obtenerUnCurso(id)
+        .then((data) => {
+          setFormData({
+
+            nombre: data.nombre || "",
+
+          });
+        })
+        .catch((error) => {
+          console.error("Error al obtener el Curso:", error);
+        });
+    } else {
+      setFormData({
+        nombre: "",
+      });
+      setErrors({});
+    }
+  }, [id]);
+
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData({ ...formData, [id]: value });
-    setErrors({ ...errors, [id]: "" }); // Borra el error cuando el usuario escribe
+    setErrors({ ...errors, [id]: "" });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     let newErrors = {};
 
-    // Validación de campos requeridos
     Object.keys(formData).forEach((key) => {
       if (!formData[key].trim()) {
         newErrors[key] = "Este campo es obligatorio";
       }
     });
 
-    // Si hay errores, los mostramos
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-    } else {
-      insertarCurso(formData)
+      return;
+    }
+
+    if (id) {
+      actualizarCurso(id, formData)
         .then((response) => {
           alert(response);
         })
         .catch((error) => {
-          console.error("Error al registrar el estudiante:", error);
+          console.error("Error al registrar el Curso:", error);
+        });
+    } else {
+      insertarCurso(formData)
+        .then((response) => {
+          if (response.success) {
+            setFormData({
+              nombre: "",
+            });
+          }
+          alert(response.message);
+        })
+        .catch((error) => {
+          console.error("Error al registrar el Curso:", error);
         });
     }
   };
@@ -71,7 +107,7 @@ export default function FormCursos() {
                 type="submit"
                 className="py-2 rounded-xl bg-blue-500 text-white text-lg font-bold hover:scale-[1.01] active:scale-[.98]"
               >
-                Registrar
+                {id ? "Actualizar" : "Registrar"}
               </button>
             </div>
           </form>
@@ -80,3 +116,5 @@ export default function FormCursos() {
     </>
   );
 }
+
+

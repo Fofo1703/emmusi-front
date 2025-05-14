@@ -1,46 +1,113 @@
-import { useState } from "react";
-import { insertarHorario } from "../../services/horariosServices";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import { insertarHorario, obtenerUnHorario, actualizarHorario } from "../../services/horariosServices";
+import { obtenerProfesores } from "../../services/profesoresServices";
+import { obtenerCursos } from "../../services/cursosServices";
 import InputConValidacion from "../../components/inputConValidacion";
 import SelectConValidacion from "../../components/selectConValidacion";
 import InputHoraConValidacion from "../../components/inputHoraConValidacion";
 import Navbar from "../../components/navbar/navbar";
+import SelectConValidacionObjetos from "../../components/selectConValidacionObjetos";
 
 export default function FormHorarios() {
   const [formData, setFormData] = useState({
-    curso: "",
-    profe: "",
+    idCurso: "",
+    idProfesor: "",
     dia: "",
     horaInicio: "",
     horaFin: "",
     ciclo: "",
   });
 
+  const [profesores, setProfesores] = useState([]);
+  const [cursos, setCursos] = useState([]);
+
+
   const [errors, setErrors] = useState({});
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
+
+  useEffect(() => {
+    // Obtener lista de profesores
+    obtenerProfesores()
+      .then((data) => setProfesores(data || []))
+      .catch((error) => console.error("Error al obtener profesores:", error));
+
+    // Obtener lista de cursos
+    obtenerCursos()
+      .then((data) => setCursos(data || []))
+      .catch((error) => console.error("Error al obtener cursos:", error));
+
+    // Si hay un ID, obtener el horario correspondiente
+    if (id) {
+      obtenerUnHorario(id)
+        .then((data) => {
+          setFormData({
+            idCurso: data.idCurso || "",
+            idProfesor: data.idProfesor || "",
+            dia: data.dia || "",
+            horaInicio: data.horaInicio || "",
+            horaFin: data.horaFin || "",
+            ciclo: data.ciclo || "",
+          });
+        })
+        .catch((error) => console.error("Error al obtener horario:", error));
+    } else {
+      setFormData({
+        idCurso: "",
+        idProfesor: "",
+        dia: "",
+        horaInicio: "",
+        horaFin: "",
+        ciclo: "",
+      });
+      setErrors({});
+    }
+  }, [id]);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData({ ...formData, [id]: value });
-    setErrors({ ...errors, [id]: "" }); // Borra el error cuando el usuario escribe
+    setErrors({ ...errors, [id]: "" });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     let newErrors = {};
 
-    // Validación de campos requeridos
     Object.keys(formData).forEach((key) => {
       if (!formData[key].trim()) {
         newErrors[key] = "Este campo es obligatorio";
       }
     });
 
-    // Si hay errores, los mostramos
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      return;
+    }
+
+    if (id) {
+      actualizarHorario(id, formData)
+        .then((response) => {
+          alert(response);
+        })
+        .catch((error) => {
+          console.error("Error al registrar el horario:", error);
+        });
     } else {
       insertarHorario(formData)
         .then((response) => {
-          alert(response);
+          if (response.success) {
+            setFormData({
+              idCurso: "",
+              idProfesor: "",
+              dia: "",
+              horaInicio: "",
+              horaFin: "",
+              ciclo: "",
+            });
+          }
+          alert(response.message);
         })
         .catch((error) => {
           console.error("Error al registrar el horario:", error);
@@ -50,48 +117,40 @@ export default function FormHorarios() {
 
   return (
     <>
-      <Navbar/>
+      <Navbar />
       <div className="h-auto flex flex-col items-center justify-center text-center mt-16 sm:mt-3 ">
         <p className="text-5xl font-semibold mb-12">Formulario de Horarios</p>
 
         <div className="w-full flex items-center justify-center">
-          <form
-            onSubmit={handleSubmit}
-            className=" bg-white px-10 py-6 rounded-3xl border-2"
-          >
-            <InputConValidacion
-              id="curso"
+          <form onSubmit={handleSubmit} className=" bg-white px-10 py-6 rounded-3xl border-2">
+
+            <SelectConValidacionObjetos
+              id="idCurso"
               name="curso"
               label="Curso"
-              value={formData.curso}
+              value={formData.idCurso}
               onChange={handleChange}
-              placeholder="Ingrese el curso"
               requerido
-              validacion="texto"
-              inputProps={{
-                maxLength: 50,
-              }}
-              inputClassName="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              options={cursos} // Pasamos el array tal cual
+              selectClassName="text-sm"
               labelClassName="block text-gray-700 text-sm font-bold mb-2"
-              error={errors.curso} // Pasamos el error aquí
+              error={errors.idCurso}
             />
 
-            <InputConValidacion
-              id="profe"
-              name="profe"
-              label="Profe"
-              value={formData.profe}
+            <SelectConValidacionObjetos
+              id="idProfesor"
+              name="profesor"
+              label="Profesor"
+              value={formData.idProfesor}
               onChange={handleChange}
-              placeholder="Ingrese el profe"
               requerido
-              validacion="texto"
-              inputProps={{
-                maxLength: 50,
-              }}
-              inputClassName="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              options={profesores} // Pasamos el array tal cual
+              selectClassName="text-sm"
               labelClassName="block text-gray-700 text-sm font-bold mb-2"
-              error={errors.profe} // Pasamos el error aquí
+              error={errors.idProfesor}
             />
+
+
 
             <SelectConValidacion
               id="dia"
@@ -105,9 +164,7 @@ export default function FormHorarios() {
                 "Martes",
                 "Miércoles",
                 "Jueves",
-                "Viernes",
-                "Sábado",
-                "Domingo",
+                "Viernes"
               ]}
               selectClassName="text-sm"
               labelClassName="block text-gray-700 text-sm font-bold mb-2"
@@ -148,7 +205,7 @@ export default function FormHorarios() {
               onChange={handleChange}
               placeholder="Ingrese el clico"
               requerido
-              validacion="texto"
+              validacion="ciclo"
               inputProps={{
                 maxLength: 50,
               }}
@@ -162,7 +219,7 @@ export default function FormHorarios() {
                 type="submit"
                 className="py-2 rounded-xl bg-blue-500 text-white text-lg font-bold hover:scale-[1.01] active:scale-[.98]"
               >
-                Registrar
+                {id ? "Actualizar" : "Registrar"}
               </button>
             </div>
           </form>
@@ -171,3 +228,4 @@ export default function FormHorarios() {
     </>
   );
 }
+

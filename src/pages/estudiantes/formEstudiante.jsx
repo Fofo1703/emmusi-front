@@ -33,7 +33,7 @@ export default function FormEstudiante() {
         .catch((error) => {
           console.error("Error al obtener estudiante:", error);
         });
-    }else{
+    } else {
       setFormData({
         cedula: "",
         nombre: "",
@@ -85,14 +85,16 @@ export default function FormEstudiante() {
     } else {
       insertarEstudiante(formData)
         .then((response) => {
-          alert(response);
-          setFormData({
-            cedula: "",
-            nombre: "",
-            telefono: "",
-            especialidad: "",
-            subespecialidad: "",
-          });
+          if (response.success) {
+            setFormData({
+              cedula: "",
+              nombre: "",
+              telefono: "",
+              especialidad: "",
+              subespecialidad: "",
+            });
+          }
+          alert(response.message);
         })
         .catch((error) => {
           console.error("Error al registrar el estudiante:", error);

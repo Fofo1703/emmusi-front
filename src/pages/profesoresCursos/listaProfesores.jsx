@@ -74,12 +74,12 @@ export default function ListaEstudiantes() {
     };
 
     const columns = [
-        { name: 'Nombre', selector: row => row.nombre, sortable: true, wrap: true, minWidth: '150px' },
+        { name: 'Nombre', selector: row => row.nombre, sortable: true, wrap: true, minWidth: '150px'  },
         {
-            name: 'Acciones', minWidth: '300px',
+            name: 'Acciones',  minWidth: '300px' ,
             cell: row => (
                 <div className='flex flex-row gap-2 '>
-                    <Link to={`/profesores/registro?id=${row.id}`}>
+                    <Link to={`/formsProfesoresCursos/registro?tipo=profesor&id=${row.id}`}>
                         <Button size="small" variant="contained" color="warning" startIcon={<EditIcon />}>Actualizar</Button>
                     </Link>
                     <Button

@@ -13,11 +13,7 @@ export async function obtenerEstudiantes() {
 }
 
 export async function obtenerUnEstudiante(id) {
-    const options = {
-        method: "GET",
-        withCredentials: false,
-        url: OBTENER_UN_ESTUDIANTE + id,
-    };
+    const options = { method: "GET", withCredentials: false, url: OBTENER_UN_ESTUDIANTE + id };
 
     return await axios.request(options).then(function (response) {
         return response.data[0];
@@ -27,29 +23,24 @@ export async function obtenerUnEstudiante(id) {
 }
 
 export async function insertarEstudiante(estudiante) {
-
-    const options = {
-        method: "POST",
-        withCredentials: false,
-        url: INSERTAR_ESTUDIANTE,
-        data: estudiante,
-    };
+    const options = {method: "POST", withCredentials: false, url: INSERTAR_ESTUDIANTE, data: estudiante };
 
     return await axios
         .request(options)
         .then((response) => {
             // Mostrar mensaje de éxito del backend
-            return response.data.message;
+            return { success: true, message: response.data.message };
         })
         .catch((error) => {
             // Capturar el mensaje del backend en caso de error
-            return error.response?.data?.message;
+            return { success: false, message: error.response?.data?.message };
         });
 }
 
 
-export async function actualizarEstudiante(id,estudiante) {
+export async function actualizarEstudiante(id, estudiante) {
     const options = { method: "PUT", withCredentials: false, url: ACTUALIZAR_ESTUDIANTE + id, data: estudiante };
+    
     return await axios
         .request(options)
         .then((response) => {
@@ -66,13 +57,9 @@ export async function eliminarEstudiante(id) {
     const options = { method: "DELETE", withCredentials: false, url: ELIMINAR_ESTUDIANTE + id };
 
     return await axios
-        .request(options)
-        .then((response) => {
-            // Mostrar mensaje de éxito del backend
-            return response.data.message;
-        })
-        .catch((error) => {
-            // Capturar el mensaje del backend en caso de error
-            return error.response?.data?.message;
+        .request(options).then(function (response) {
+            return response.status;
+        }).catch(function (error) {
+            console.log(error);
         });
 }

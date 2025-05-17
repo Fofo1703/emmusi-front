@@ -14,6 +14,8 @@ export default function Login({ setIsAuthenticated }) {
   };
 
   const handleLogin = async () => {
+    const quitarEspacios = credenciales.usuario.trim();
+    credenciales.usuario = quitarEspacios;
     const result = await validarCredenciales(credenciales);
 
     if (result.success) {

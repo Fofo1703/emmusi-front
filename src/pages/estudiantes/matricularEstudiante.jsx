@@ -103,11 +103,13 @@ export default function FormMatriculacion() {
 
     const camposRequeridos = ["idEstudiante", "idCurso", "idHorario", "ciclo"];
 
-    camposRequeridos.forEach((key) => {
-      if (!formData[key].trim()) {
-        newErrors[key] = "Este campo es obligatorio";
-      }
-    });
+camposRequeridos.forEach((key) => {
+  const value = formData[key];
+  if (typeof value !== "string" || !value.trim()) {
+    newErrors[key] = "Este campo es obligatorio";
+  }
+});
+
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);

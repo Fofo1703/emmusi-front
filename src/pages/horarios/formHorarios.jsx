@@ -7,7 +7,7 @@ import InputConValidacion from "../../components/inputConValidacion";
 import SelectConValidacion from "../../components/selectConValidacion";
 import InputHoraConValidacion from "../../components/inputHoraConValidacion";
 import Navbar from "../../components/navbar/navbar";
-import SelectConValidacionObjetos from "../../components/selectConValidacionObjetos";
+import SelectConFiltro from "../../components/selectConFiltro";
 
 export default function FormHorarios() {
   const [formData, setFormData] = useState({
@@ -30,12 +30,18 @@ export default function FormHorarios() {
   useEffect(() => {
     // Obtener lista de profesores
     obtenerProfesores()
-      .then((data) => setProfesores(data || []))
+      .then((data) => {
+        const profesoresConOpcionVacia = [{ id: "", nombre: "Seleccione una opción" }, ...(data || [])];
+        setProfesores(profesoresConOpcionVacia);
+      })
       .catch((error) => console.error("Error al obtener profesores:", error));
 
     // Obtener lista de cursos
     obtenerCursos()
-      .then((data) => setCursos(data || []))
+      .then((data) => {
+        const cursosConOpcionVacia = [{ id: "", nombre: "Seleccione una opción" }, ...(data || [])];
+        setCursos(cursosConOpcionVacia);
+      })
       .catch((error) => console.error("Error al obtener cursos:", error));
 
     // Si hay un ID, obtener el horario correspondiente
@@ -115,6 +121,8 @@ export default function FormHorarios() {
     }
   };
 
+
+
   return (
     <>
       <Navbar />
@@ -124,33 +132,31 @@ export default function FormHorarios() {
         <div className="w-full flex items-center justify-center">
           <form onSubmit={handleSubmit} className=" bg-white px-10 py-6 rounded-3xl border-2">
 
-            <SelectConValidacionObjetos
+            <SelectConFiltro
               id="idCurso"
               name="curso"
               label="Curso"
               value={formData.idCurso}
               onChange={handleChange}
               requerido
-              options={cursos} // Pasamos el array tal cual
+              options={cursos}
               selectClassName="text-sm"
               labelClassName="block text-gray-700 text-sm font-bold mb-2"
               error={errors.idCurso}
             />
 
-            <SelectConValidacionObjetos
+            <SelectConFiltro
               id="idProfesor"
               name="profesor"
               label="Profesor"
               value={formData.idProfesor}
               onChange={handleChange}
               requerido
-              options={profesores} // Pasamos el array tal cual
+              options={profesores}
               selectClassName="text-sm"
               labelClassName="block text-gray-700 text-sm font-bold mb-2"
               error={errors.idProfesor}
             />
-
-
 
             <SelectConValidacion
               id="dia"

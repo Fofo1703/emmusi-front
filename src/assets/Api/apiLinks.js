@@ -4,7 +4,7 @@ const URL_ESTUDIANTES = URL + 'estudiantes/';
 const URL_PROFESORES = URL + 'profesores/';
 const URL_CURSOS = URL + 'cursos/';
 const URL_HORARIOS = URL + 'horarios/';
-// const URL_RATINGS = URL + 'calificaciones/';
+const URL_CURSOS_MATRICULADOS = URL + 'cursos-matriculados/';
 // const URL_COURSES_ENROLLED = URL + 'cursos-matriculados/';
 // const URL_SCHEDULES = URL + 'horarios/';
 
@@ -33,3 +33,10 @@ export const OBTENER_UN_HORARIO = URL_HORARIOS + 'getHorario/';
 export const INSERTAR_HORARIO = URL_HORARIOS + 'insertHorario';
 export const ACTUALIZAR_HORARIO = URL_HORARIOS + 'updateHorario/';
 export const ELIMINAR_HORARIO = URL_HORARIOS + 'deleteHorario/';
+export const OBTENER_HORARIOS_POR_CURSO = URL_HORARIOS + 'getHorariosPorCurso/';
+
+export const OBTENER_CURSOS_MATRICULADOS = URL_CURSOS_MATRICULADOS + 'getCursosMatriculados/';
+export const OBTENER_UN_CURSO_MATRICULADO = URL_CURSOS_MATRICULADOS + 'getCursoMatriculado/';
+export const INSERTAR_CURSO_MATRICULADO = URL_CURSOS_MATRICULADOS + 'insertCursoMatriculado';
+export const ACTUALIZAR_CURSO_MATRICULADO = URL_CURSOS_MATRICULADOS + 'updateCursoMatriculado/';
+export const ELIMINAR_CURSO_MATRICULADO = URL_CURSOS_MATRICULADOS + 'deleteCursoMatriculado/';

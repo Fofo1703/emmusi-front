@@ -1,9 +1,9 @@
 import axios from "axios";
 
-import { OBTENER_HORARIOS, OBTENER_UN_HORARIO, INSERTAR_HORARIO, ACTUALIZAR_HORARIO, ELIMINAR_HORARIO, OBTENER_HORARIOS_POR_CURSO } from "../assets/Api/apiLinks";
+import { OBTENER_CURSOS_MATRICULADOS, OBTENER_UN_CURSO_MATRICULADO, INSERTAR_CURSO_MATRICULADO, ACTUALIZAR_CURSO_MATRICULADO, ELIMINAR_CURSO_MATRICULADO } from "../assets/Api/apiLinks";
 
-export async function obtenerHorarios() {
-    const options = { method: 'GET', withCredentials: false, url: OBTENER_HORARIOS };
+export async function obtenerCursosMatriculados(id) {
+    const options = { method: 'GET', withCredentials: false, url: OBTENER_CURSOS_MATRICULADOS + id };
 
     return await axios.request(options).then(function (response) {
         return response.data;
@@ -12,8 +12,8 @@ export async function obtenerHorarios() {
     });
 }
 
-export async function obtenerUnHorario(id) {
-    const options = { method: "GET", withCredentials: false, url: OBTENER_UN_HORARIO + id };
+export async function obtenerUnCursoMatriculado(id) {
+    const options = { method: "GET", withCredentials: false, url: OBTENER_UN_CURSO_MATRICULADO + id };
 
     return await axios.request(options).then(function (response) {
         return response.data[0];
@@ -22,8 +22,10 @@ export async function obtenerUnHorario(id) {
     });
 }
 
-export async function insertarHorario(horario) {
-    const options = { method: "POST", withCredentials: false, url: INSERTAR_HORARIO, data: horario };
+export async function insertarCursoMatriculado(curso) {
+    console.log(curso);
+    
+    const options = { method: "POST", withCredentials: false, url: INSERTAR_CURSO_MATRICULADO, data: curso };
 
     return await axios
         .request(options)
@@ -38,8 +40,8 @@ export async function insertarHorario(horario) {
 }
 
 
-export async function actualizarHorario(id, horario) {
-    const options = { method: "PUT", withCredentials: false, url: ACTUALIZAR_HORARIO + id, data: horario };
+export async function actualizarCursoMatriculado(id,curso) {
+    const options = { method: "PUT", withCredentials: false, url: ACTUALIZAR_CURSO_MATRICULADO + id, data: curso };
 
     return await axios
         .request(options)
@@ -53,8 +55,8 @@ export async function actualizarHorario(id, horario) {
         });
 }
 
-export async function eliminarHorario(id) {
-    const options = { method: "GET", withCredentials: false, url: ELIMINAR_HORARIO + id };
+export async function eliminarCursoMatriculado(id) {
+    const options = { method: "DELETE", withCredentials: false, url: ELIMINAR_CURSO_MATRICULADO + id };
 
     return await axios
         .request(options).then(function (response) {
@@ -62,14 +64,4 @@ export async function eliminarHorario(id) {
         }).catch(function (error) {
             console.log(error);
         });
-}
-
-export async function obtenerHorariosPorCurso(id) {
-    const options = { method: "GET", withCredentials: false, url: OBTENER_HORARIOS_POR_CURSO + id };
-
-    return await axios.request(options).then(function (response) {
-        return response.data;
-    }).catch(function (error) {
-        console.error(error);
-    });
 }

@@ -2,14 +2,13 @@ import { useEffect, useState, useMemo } from 'react';
 import { useSearchParams } from "react-router-dom";
 import { Button, Stack, Box, TextField } from '@mui/material';
 import { obtenerUnEstudiante } from '../../services/estudianteServices';
-import { obtenerCursosMatriculados, eliminarCursoMatriculado } from '../../services/cursosMatriculadosServices';
-import { insertarCursoHistorico } from '../../services/cursosHistoricosServices';
+import { obtenerCursosMatriculados, agregarNota } from '../../services/cursosMatriculadosServices';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import Navbar from '../../components/navbar/navbar';
 import DataTable from 'react-data-table-component';
 
-import DeleteIcon from '@mui/icons-material/Delete';
+import NotesIcon from '@mui/icons-material/Notes';
 import SchoolIcon from '@mui/icons-material/School';
 
 
@@ -18,7 +17,7 @@ import logo from '../../assets/images/logo emmusi.jpg'; // Asegúrate de importa
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 
-export default function ListaEstudiantesCursos() {
+export default function NotasAusencias() {
     const [rows, setRows] = useState([]);
     const [estudiante, setEstudiante] = useState({
         id: "",
@@ -64,17 +63,6 @@ export default function ListaEstudiantesCursos() {
         }
     }, [id]);
 
-    const handleEliminar = async (idCursoMatriculado) => {
-        const confirm = window.confirm('¿Estás seguro de que deseas eliminar este Curso Matriculado?');
-        if (!confirm) return;
-
-        const status = await eliminarCursoMatriculado(idCursoMatriculado);
-        if (status === 200) {
-            alert('Curso eliminado');
-            fetchCursosMatriculados(id);
-        }
-    };
-
     const filteredRows = useMemo(() => {
         const normalizedFilter = filterText.toLowerCase();
         return rows.filter(row =>
@@ -83,15 +71,36 @@ export default function ListaEstudiantesCursos() {
         );
     }, [rows, filterText]);
 
-const pasarHistorico = async (idCursoMatriculado) => {
-    await insertarCursoHistorico(idCursoMatriculado).then((response) => {
-        alert(response.message);
-        if (response.success){
-            fetchCursosMatriculados(id);
+    const obtenerNota = async (idCursoMatriculado) => {
+        const input = prompt("Ingrese la nota (0-100) o 'Retiro Justificado' / 'No Oferta':");
+
+        if (input === null) return; // Usuario canceló
+
+        const notaLimpia = input.trim();
+
+        // Verificar si es número entre 0 y 100
+        const esNumeroValido = !isNaN(notaLimpia) && Number(notaLimpia) >= 0 && Number(notaLimpia) <= 100;
+
+        // Verificar si es una frase válida (ignorando mayúsculas)
+        const frasesValidas = ["Retiro Justificado", "No Oferta"];
+        const esFraseValida = frasesValidas.some(f => f.toLowerCase() === notaLimpia.toLowerCase());
+
+        if (!esNumeroValido && !esFraseValida) {
+            alert("Nota inválida. No cumple con los requerimientos.");
+            return;
         }
-    }).catch((error) => {
-        console.error("Error al mover a historico:", error);
-    })
+
+        await agregarNota(idCursoMatriculado, notaLimpia).then((response) => {
+            alert(response);
+        }).catch((error) => {
+            console.error("Error al agregar nota:", error);
+        })
+
+
+    };
+
+const agregarAusencias = async (idCursoMatriculado) => {
+
 }
 
 
@@ -100,21 +109,13 @@ const pasarHistorico = async (idCursoMatriculado) => {
         { name: 'Horario', selector: row => row.horario, sortable: true, wrap: true, minWidth: '300px' },
         { name: 'Profesor', selector: row => row.profesor, wrap: true, minWidth: '100px' },
         {
-            name: 'Acciones', minWidth: '490px',
+            name: 'Acciones', minWidth: '380px',
             cell: row => (
                 <div className='flex flex-row gap-2'>
-                    <Button size="small" variant="outlined" onClick={() => pasarHistorico(row.id)} startIcon={<SchoolIcon />}>
-                        Pasar a Historico
+                    <Button size="small" variant="outlined" onClick={() => agregarAusencias(row.id)} startIcon={<SchoolIcon />}>
+                        Agregar Ausencias
                     </Button>
-                    <Button
-                        size="small"
-                        variant="contained"
-                        color="error"
-                        onClick={() => handleEliminar(row.id)}
-                        startIcon={<DeleteIcon />}
-                    >
-                        Eliminar
-                    </Button>
+                    <Button size="small" variant="outlined" color="secondary" onClick={() => obtenerNota(row.id)} startIcon={<NotesIcon />}>Agregar Nota</Button>
                 </div>
             ),
         }
@@ -313,7 +314,7 @@ const pasarHistorico = async (idCursoMatriculado) => {
 
                 <div className='w-fit m-auto'>
                     <Stack sx={{ mb: 2 }}>
-                        <label className='text-4xl font-bold'>Lista de Cursos Matriculados</label>
+                        <label className='text-4xl font-bold'>Lista de Notas y Ausencias</label>
                     </Stack>
 
                     <div className='flex flex-col sm:flex-row gap-5 mb-5'>

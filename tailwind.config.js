@@ -3,7 +3,9 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
-      'anaranjado-cuadro': '#F1B282'
+      colors: {
+        'anaranjado-cuadro': '#F1B282',
+      },
     },
   },
   plugins: [],

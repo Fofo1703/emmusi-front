@@ -11,6 +11,7 @@ import FormHorarios from "../pages/horarios/formHorarios";
 import ListaHorarios from "../pages/horarios/listaHorarios";
 import FormMatriculacion from "../pages/estudiantes/matricularEstudiante";
 import ListaEstudiantesCursos from "../pages/estudiantes/listaEstudianteCursos";
+import NotasAusencias from "../pages/estudiantes/notasAusencias";
 
 
 const LOGOUT_TIME = 30 * 60 * 1000; // 30 minutos en milisegundos
@@ -62,6 +63,7 @@ const PublicRoutes = () => {
           <Route path="/horarios/listaHorarios" element={<ListaHorarios />} />
           <Route path="/estudiantes/matricularEstudiante" element={<FormMatriculacion />} />
           <Route path="/estudiantes/listaEstudianteCursos" element={<ListaEstudiantesCursos />} />
+          <Route path="/estudiantes/notasAusencias" element={<NotasAusencias />} />
         </Route>
       </Routes>
     </Router>

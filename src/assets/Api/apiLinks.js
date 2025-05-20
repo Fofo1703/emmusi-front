@@ -5,7 +5,7 @@ const URL_PROFESORES = URL + 'profesores/';
 const URL_CURSOS = URL + 'cursos/';
 const URL_HORARIOS = URL + 'horarios/';
 const URL_CURSOS_MATRICULADOS = URL + 'cursos-matriculados/';
-// const URL_COURSES_ENROLLED = URL + 'cursos-matriculados/';
+const URL_CURSOS_HISTORICOS = URL + 'cursos-historicos/';
 // const URL_SCHEDULES = URL + 'horarios/';
 
 export const VALIDAR_CREDENCIALES = URL_USUARIOS + 'validarCredenciales';
@@ -39,4 +39,11 @@ export const OBTENER_CURSOS_MATRICULADOS = URL_CURSOS_MATRICULADOS + 'getCursosM
 export const OBTENER_UN_CURSO_MATRICULADO = URL_CURSOS_MATRICULADOS + 'getCursoMatriculado/';
 export const INSERTAR_CURSO_MATRICULADO = URL_CURSOS_MATRICULADOS + 'insertCursoMatriculado';
 export const ACTUALIZAR_CURSO_MATRICULADO = URL_CURSOS_MATRICULADOS + 'updateCursoMatriculado/';
+export const AGREGAR_NOTA = URL_CURSOS_MATRICULADOS + 'agregarNota/';
 export const ELIMINAR_CURSO_MATRICULADO = URL_CURSOS_MATRICULADOS + 'deleteCursoMatriculado/';
+
+export const OBTENER_CURSOS_HISTORICOS = URL_CURSOS_HISTORICOS + 'getCursosHistoricos/';
+export const OBTENER_UN_CURSO_HISTORICO = URL_CURSOS_HISTORICOS + 'getCursoHistorico/';
+export const INSERTAR_CURSO_HISTORICO = URL_CURSOS_HISTORICOS + 'insertCursoHistorico/';
+export const ACTUALIZAR_CURSO_HISTORICO = URL_CURSOS_HISTORICOS + 'updateCursoHistorico/';
+export const ELIMINAR_CURSO_HISTORICO = URL_CURSOS_HISTORICOS + 'deleteCursoHistorico/';

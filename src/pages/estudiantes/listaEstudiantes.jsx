@@ -94,7 +94,7 @@ export default function ListaEstudiantes() {
                     <Link to={`/estudiantes/matricularEstudiante?id=${row.id}`}>
                         <Button size="small" variant="outlined" startIcon={<SchoolIcon />}>Matricular</Button>
                     </Link>
-                    <Link to={`/estudiantes/${row.id}/notas`}>
+                    <Link to={`/estudiantes/notasAusencias?id=${row.id}`}>
                         <Button size="small" variant="outlined" color="secondary" startIcon={<NotesIcon />}>Notas/Ausencias</Button>
                     </Link>
                     <Link to={`/estudiantes/listaEstudianteCursos?id=${row.id}`}>

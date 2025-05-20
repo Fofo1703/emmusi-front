@@ -54,8 +54,8 @@ export default function FormMatriculacion() {
             especialidad: data.especialidad || "",
             subespecialidad: data.subespecialidad || ""
 
-          });
-          setFormData((prev) => ({ ...prev, idEstudiante: id || "" }));
+          }); setFormData((prev) => ({ ...prev, idEstudiante: id || "" }));
+
 
         })
         .catch((error) => console.error("Error al obtener horario:", error));
@@ -100,30 +100,38 @@ export default function FormMatriculacion() {
   const handleSubmit = (e) => {
     e.preventDefault();
     let newErrors = {};
+    console.log(formData.idEstudiante);
 
     const camposRequeridos = ["idEstudiante", "idCurso", "idHorario", "ciclo"];
 
-camposRequeridos.forEach((key) => {
-  const value = formData[key];
-  if (typeof value !== "string" || !value.trim()) {
-    newErrors[key] = "Este campo es obligatorio";
-  }
-});
+    camposRequeridos.forEach((key) => {
+      const value = formData[key];
+      console.log(value);
+
+      if (typeof value !== "string" || !value.trim()) {
+        newErrors[key] = "Este campo es obligatorio";
+      }
+    });
 
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
+    console.log(formData);
 
     insertarCursoMatriculado(formData)
       .then((response) => {
         if (response.success) {
           setFormData({
+            idEstudiante: estudiante.id,
             idCurso: "",
             idHorario: "",
             ciclo: "",
+            nota: "",
+            estado: "",
           });
+
         }
         alert(response.message);
       })

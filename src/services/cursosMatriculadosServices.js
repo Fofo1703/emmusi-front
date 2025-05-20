@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { OBTENER_CURSOS_MATRICULADOS, OBTENER_UN_CURSO_MATRICULADO, INSERTAR_CURSO_MATRICULADO, ACTUALIZAR_CURSO_MATRICULADO, ELIMINAR_CURSO_MATRICULADO } from "../assets/Api/apiLinks";
+import { OBTENER_CURSOS_MATRICULADOS, OBTENER_UN_CURSO_MATRICULADO, INSERTAR_CURSO_MATRICULADO, ACTUALIZAR_CURSO_MATRICULADO, AGREGAR_NOTA, ELIMINAR_CURSO_MATRICULADO } from "../assets/Api/apiLinks";
 
 export async function obtenerCursosMatriculados(id) {
     const options = { method: 'GET', withCredentials: false, url: OBTENER_CURSOS_MATRICULADOS + id };
@@ -23,7 +23,9 @@ export async function obtenerUnCursoMatriculado(id) {
 }
 
 export async function insertarCursoMatriculado(curso) {
-    console.log(curso);
+    if (curso.nota === "") {
+        curso.nota = null;
+    }
     
     const options = { method: "POST", withCredentials: false, url: INSERTAR_CURSO_MATRICULADO, data: curso };
 
@@ -42,6 +44,22 @@ export async function insertarCursoMatriculado(curso) {
 
 export async function actualizarCursoMatriculado(id,curso) {
     const options = { method: "PUT", withCredentials: false, url: ACTUALIZAR_CURSO_MATRICULADO + id, data: curso };
+
+    return await axios
+        .request(options)
+        .then((response) => {
+            // Mostrar mensaje de éxito del backend
+            return response.data.message;
+        })
+        .catch((error) => {
+            // Capturar el mensaje del backend en caso de error
+            return error.response?.data?.message;
+        });
+}
+
+export async function agregarNota(id,nota) {
+    
+    const options = { method: "PUT", withCredentials: false, url: AGREGAR_NOTA + id, data: {nota} };
 
     return await axios
         .request(options)

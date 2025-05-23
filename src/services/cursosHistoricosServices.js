@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import Swal from "sweetalert2";
 import { OBTENER_CURSOS_HISTORICOS, OBTENER_UN_CURSO_HISTORICO, INSERTAR_CURSO_HISTORICO, ACTUALIZAR_CURSO_HISTORICO, ELIMINAR_CURSO_HISTORICO } from "../assets/Api/apiLinks";
 
 export async function obtenerCursosHistorico(id) {
@@ -8,7 +8,12 @@ export async function obtenerCursosHistorico(id) {
     return await axios.request(options).then(function (response) {
         return response.data;
     }).catch(function (error) {
-        console.error(error);
+        Swal.fire({
+            icon: "error",
+            title: error.response?.data?.message,
+            showConfirmButton: false,
+            timer: 1500
+        });
     });
 }
 
@@ -18,12 +23,17 @@ export async function obtenerUnCursoHistorico(id) {
     return await axios.request(options).then(function (response) {
         return response.data[0];
     }).catch(function (error) {
-        console.error(error);
+        Swal.fire({
+            icon: "error",
+            title: error.response?.data?.message,
+            showConfirmButton: false,
+            timer: 1500
+        });
     });
 }
 
 export async function insertarCursoHistorico(id) {
-    
+
     const options = { method: "POST", withCredentials: false, url: INSERTAR_CURSO_HISTORICO + id };
 
     return await axios
@@ -39,7 +49,7 @@ export async function insertarCursoHistorico(id) {
 }
 
 
-export async function actualizarCursoHistorico(id,curso) {
+export async function actualizarCursoHistorico(id, curso) {
     const options = { method: "PUT", withCredentials: false, url: ACTUALIZAR_CURSO_HISTORICO + id, data: curso };
 
     return await axios
@@ -61,6 +71,11 @@ export async function eliminarCursoHistorico(id) {
         .request(options).then(function (response) {
             return response.status;
         }).catch(function (error) {
-            console.log(error);
+            Swal.fire({
+                icon: "error",
+                title: error.response?.data?.message,
+                showConfirmButton: false,
+                timer: 1500
+            });
         });
 }

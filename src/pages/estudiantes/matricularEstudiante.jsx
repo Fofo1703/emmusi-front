@@ -8,7 +8,7 @@ import Navbar from "../../components/navbar/navbar";
 import SelectConFiltro from "../../components/selectConFiltro";
 import InputConValidacion from "../../components/inputConValidacion";
 import SelectConValidacion from "../../components/selectConValidacion";
-
+import Swal from "sweetalert2";
 export default function FormMatriculacion() {
   const [formData, setFormData] = useState({
     idEstudiante: "",
@@ -16,7 +16,6 @@ export default function FormMatriculacion() {
     idHorario: "",
     ciclo: "",
     nota: "",
-    estado: "",
   });
   const [estudiante, setEstudiante] = useState({
     id: "",
@@ -40,7 +39,14 @@ export default function FormMatriculacion() {
         const cursosConOpcionVacia = [{ id: "", nombre: "Seleccione una opción" }, ...(data || [])];
         setCursos(cursosConOpcionVacia);
       })
-      .catch((error) => console.error("Error al obtener cursos:", error));
+      .catch((error) => {
+        Swal.fire({
+          icon: "error",
+          title: "Error al obtener la informacion del estudiante",
+          showConfirmButton: false,
+          timer: 1500
+        });
+      });
 
     // Si hay un ID, obtener el estudiante correspondiente
     if (id) {
@@ -100,13 +106,11 @@ export default function FormMatriculacion() {
   const handleSubmit = (e) => {
     e.preventDefault();
     let newErrors = {};
-    console.log(formData.idEstudiante);
 
     const camposRequeridos = ["idEstudiante", "idCurso", "idHorario", "ciclo"];
 
     camposRequeridos.forEach((key) => {
       const value = formData[key];
-      console.log(value);
 
       if (typeof value !== "string" || !value.trim()) {
         newErrors[key] = "Este campo es obligatorio";
@@ -118,27 +122,36 @@ export default function FormMatriculacion() {
       setErrors(newErrors);
       return;
     }
-    console.log(formData);
 
     insertarCursoMatriculado(formData)
       .then((response) => {
         if (response.success) {
           setFormData({
-            idEstudiante: estudiante.id,
-            idCurso: "",
-            idHorario: "",
-            ciclo: "",
-            nota: "",
-            estado: "",
+            cedula: "",
+            nombre: "",
+            telefono: "",
+            especialidad: "",
+            subespecialidad: "",
           });
-
+          Swal.fire({
+            icon: "success",
+            title: response.message,
+            showConfirmButton: false,
+            timer: 1500
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: response.message,
+            showConfirmButton: false,
+            timer: 1500
+          });
         }
-        alert(response.message);
+
       })
       .catch((error) => {
         console.error("Error al matricular al estudiante:", error);
       });
-    // }
   };
 
 

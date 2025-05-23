@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
-
+import Swal from 'sweetalert2';
 import { Button, Stack, Box, TextField } from '@mui/material';
 import { obtenerEstudiantes, eliminarEstudiante } from '../../services/estudianteServices';
 import * as XLSX from 'xlsx';
@@ -20,31 +20,74 @@ export default function ListaEstudiantes() {
     const [filterText, setFilterText] = useState('');
 
     const fetchEstudiantes = async () => {
-        try {
-            const data = await obtenerEstudiantes();
-            const estudiantesConId = data.map((item, index) => ({
+        
+        obtenerEstudiantes()
+              .then((data) => {
+                 const estudiantesConId = data.map((item, index) => ({
                 ...item,
                 id: item.id || index,
             }));
             setRows(estudiantesConId);
-        } catch (error) {
-            console.error('Error al obtener estudiantes:', error);
-        }
+              })
+              .catch((error) => {
+                Swal.fire({
+                  icon: "error",
+                  title: "Error al obtener la informacion de los estudiante",
+                  showConfirmButton: false,
+                  timer: 1500
+                });
+              });
     };
 
     useEffect(() => {
         fetchEstudiantes();
     }, []);
 
-    const handleEliminar = async (id) => {
-        const confirm = window.confirm('¿Estás seguro de que deseas eliminar este estudiante?');
-        if (!confirm) return;
+    const handleEliminar = async (id, cedNomb) => {
 
-        const status = await eliminarEstudiante(id);
-        if (status === 200) {
-            alert('Estudiante eliminado');
-            fetchEstudiantes();
+        const result = await Swal.fire({
+            title: '¿Estás seguro?',
+            text: `¿Deseas eliminar al estudiante: ${cedNomb.cedula} - ${cedNomb.nombre}?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'No',
+            reverseButtons: true,
+        });
+
+        if (result.isConfirmed) {
+            eliminarEstudiante(id)
+                .then(async(response) => {
+                    if (response.success) {
+                      await  Swal.fire({
+                            icon: "success",
+                            title: response.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        fetchEstudiantes();
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: response.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+
+                })
+                .catch((error) => {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error al registrar el estudiante",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
         }
+
+
+
     };
 
     const filteredRows = useMemo(() => {
@@ -83,12 +126,13 @@ export default function ListaEstudiantes() {
     };
 
     const columns = [
-        { name: 'Cedula', selector: row => row.cedula, sortable: true, wrap: true,  minWidth: '110px' },
+        { name: 'Cedula', selector: row => row.cedula, sortable: true, wrap: true, minWidth: '110px' },
         { name: 'Nombre', selector: row => row.nombre, sortable: true, wrap: true, minWidth: '200px' },
-        { name: 'Telefono', selector: row => row.telefono,  wrap: true, minWidth: '100px' },
+        { name: 'Telefono', selector: row => row.telefono, wrap: true, minWidth: '100px' },
         { name: 'Especialidad', selector: row => row.especialidad, wrap: true, minWidth: '140px' },
         { name: 'Subespecialidad', selector: row => row.subespecialidad, wrap: true, minWidth: '170px' },
-        {name: 'Acciones', minWidth: '730px',
+        {
+            name: 'Acciones', minWidth: '730px',
             cell: row => (
                 <div className='flex flex-row gap-2'>
                     <Link to={`/estudiantes/matricularEstudiante?id=${row.id}`}>
@@ -107,7 +151,7 @@ export default function ListaEstudiantes() {
                         size="small"
                         variant="contained"
                         color="error"
-                        onClick={() => handleEliminar(row.id)}
+                        onClick={() => handleEliminar(row.id, { cedula: row.cedula, nombre: row.nombre })}
                         startIcon={<DeleteIcon />}
                     >
                         Eliminar
@@ -118,19 +162,19 @@ export default function ListaEstudiantes() {
     ];
 
 
-  const customStyles = {
-    headCells: {
-      style: {
-        fontSize: '18px',
-        fontWeight: 'bold',
-      },
-    },
-    cells: {
-      style: {
-        fontSize: '16px',
-      },
-    },
-  };
+    const customStyles = {
+        headCells: {
+            style: {
+                fontSize: '18px',
+                fontWeight: 'bold',
+            },
+        },
+        cells: {
+            style: {
+                fontSize: '16px',
+            },
+        },
+    };
 
     return (
         <>
@@ -139,7 +183,7 @@ export default function ListaEstudiantes() {
 
                 <div className='w-fit m-auto'>
                     <Stack sx={{ mb: 2 }}>
-                        <label className='text-4xl font-bold'>Lista de Horarios</label>
+                        <label className='text-4xl font-bold'>Lista de Estudiantes</label>
                     </Stack>
 
                     <div className='flex flex-col sm:flex-row gap-5 mb-5'>

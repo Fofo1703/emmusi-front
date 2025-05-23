@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import Swal from "sweetalert2";
 import { OBTENER_CURSOS, OBTENER_UN_CURSO, INSERTAR_CURSO, ACTUALIZAR_CURSO, ELIMINAR_CURSO } from "../assets/Api/apiLinks";
 
 export async function obtenerCursos() {
@@ -8,7 +8,12 @@ export async function obtenerCursos() {
     return await axios.request(options).then(function (response) {
         return response.data;
     }).catch(function (error) {
-        console.error(error);
+        Swal.fire({
+            icon: "error",
+            title: error.response?.data?.message,
+            showConfirmButton: false,
+            timer: 1500
+        });
     });
 }
 
@@ -18,7 +23,12 @@ export async function obtenerUnCurso(id) {
     return await axios.request(options).then(function (response) {
         return response.data[0];
     }).catch(function (error) {
-        console.error(error);
+        Swal.fire({
+            icon: "error",
+            title: error.response?.data?.message,
+            showConfirmButton: false,
+            timer: 1500
+        });
     });
 }
 
@@ -38,7 +48,7 @@ export async function insertarCurso(curso) {
 }
 
 
-export async function actualizarCurso(id,curso) {
+export async function actualizarCurso(id, curso) {
     const options = { method: "PUT", withCredentials: false, url: ACTUALIZAR_CURSO + id, data: curso };
 
     return await axios
@@ -60,6 +70,11 @@ export async function eliminarCurso(id) {
         .request(options).then(function (response) {
             return response.status;
         }).catch(function (error) {
-            console.log(error);
+            Swal.fire({
+                icon: "error",
+                title: error.response?.data?.message,
+                showConfirmButton: false,
+                timer: 1500
+            });
         });
 }

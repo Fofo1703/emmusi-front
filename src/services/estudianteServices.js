@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import Swal from "sweetalert2";
 import { OBTENER_ESTUDIANTES, OBTENER_UN_ESTUDIANTE, INSERTAR_ESTUDIANTE, ACTUALIZAR_ESTUDIANTE, ELIMINAR_ESTUDIANTE } from "../assets/Api/apiLinks";
 
 export async function obtenerEstudiantes() {
@@ -8,7 +8,13 @@ export async function obtenerEstudiantes() {
     return await axios.request(options).then(function (response) {
         return response.data;
     }).catch(function (error) {
-        console.error(error);
+        Swal.fire({
+            icon: "error",
+            title: error.response?.data?.message,
+            showConfirmButton: false,
+            timer: 1500
+        });
+        return [];
     });
 }
 
@@ -18,13 +24,18 @@ export async function obtenerUnEstudiante(id) {
     return await axios.request(options).then(function (response) {
         return response.data[0];
     }).catch(function (error) {
-        console.error(error);
+        Swal.fire({
+            icon: "error",
+            title: error.response?.data?.message,
+            showConfirmButton: false,
+            timer: 1500
+        });
+        return [];
     });
 }
 
 export async function insertarEstudiante(estudiante) {
-    const options = {method: "POST", withCredentials: false, url: INSERTAR_ESTUDIANTE, data: estudiante };
-
+    const options = { method: "POST", withCredentials: false, url: INSERTAR_ESTUDIANTE, data: estudiante };
     return await axios
         .request(options)
         .then((response) => {
@@ -40,16 +51,16 @@ export async function insertarEstudiante(estudiante) {
 
 export async function actualizarEstudiante(id, estudiante) {
     const options = { method: "PUT", withCredentials: false, url: ACTUALIZAR_ESTUDIANTE + id, data: estudiante };
-    
+
     return await axios
         .request(options)
         .then((response) => {
             // Mostrar mensaje de éxito del backend
-            return response.data.message;
+            return { success: true, message: response.data.message };
         })
         .catch((error) => {
             // Capturar el mensaje del backend en caso de error
-            return error.response?.data?.message;
+            return { success: false, message: error.response?.data?.message };
         });
 }
 
@@ -58,8 +69,8 @@ export async function eliminarEstudiante(id) {
 
     return await axios
         .request(options).then(function (response) {
-            return response.status;
+            return { success: true, message: response.data.message };
         }).catch(function (error) {
-            console.log(error);
+            return { success: false, message: error.response?.data?.message };
         });
 }

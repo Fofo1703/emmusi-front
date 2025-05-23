@@ -8,7 +8,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import Navbar from '../../components/navbar/navbar';
 import DataTable from 'react-data-table-component';
-
+import Swal from 'sweetalert2';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SchoolIcon from '@mui/icons-material/School';
 
@@ -33,16 +33,37 @@ export default function ListaEstudiantesCursos() {
     const id = searchParams.get("id");
 
     const fetchCursosMatriculados = async (id) => { // Recibir id como parámetro
-        try {
-            const data = await obtenerCursosMatriculados(id); // Pasar id a la función de consulta
-            const cursosMatriculados = data.map((item, index) => ({
-                ...item,
-                id: item.id || index,
-            }));
-            setRows(cursosMatriculados);
-        } catch (error) {
-            console.error('Error al obtener los cursos matriculados:', error);
-        }
+        // try {
+        //     const data = await obtenerCursosMatriculados(id); // Pasar id a la función de consulta
+        //     if (data.length > 0) {
+        //         const cursosMatriculados = data.map((item, index) => ({
+        //             ...item,
+        //             id: item.id || index,
+        //         }));
+        //         setRows(cursosMatriculados);
+        //     }else{
+        //         setRows([]);
+        //     }
+
+        // } catch (error) {
+        //     console.error('Error al obtener los cursos matriculados:', error);
+        // }
+        obtenerCursosMatriculados(id)
+            .then((data) => {
+                const cursosMatriculados = data.map((item, index) => ({
+                    ...item,
+                    id: item.id || index,
+                }));
+                setRows(cursosMatriculados);
+            })
+            .catch((error) => {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error al obtener la informacion de los cursos matriculados",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            });
     };
 
     useEffect(() => {
@@ -73,6 +94,7 @@ export default function ListaEstudiantesCursos() {
             alert('Curso eliminado');
             fetchCursosMatriculados(id);
         }
+
     };
 
     const filteredRows = useMemo(() => {
@@ -83,16 +105,16 @@ export default function ListaEstudiantesCursos() {
         );
     }, [rows, filterText]);
 
-const pasarHistorico = async (idCursoMatriculado) => {
-    await insertarCursoHistorico(idCursoMatriculado).then((response) => {
-        alert(response.message);
-        if (response.success){
-            fetchCursosMatriculados(id);
-        }
-    }).catch((error) => {
-        console.error("Error al mover a historico:", error);
-    })
-}
+    const pasarHistorico = async (idCursoMatriculado) => {
+        await insertarCursoHistorico(idCursoMatriculado).then((response) => {
+            alert(response.message);
+            if (response.success) {
+                fetchCursosMatriculados(id);
+            }
+        }).catch((error) => {
+            console.error("Error al mover a historico:", error);
+        })
+    }
 
 
     const columns = [
@@ -243,8 +265,8 @@ const pasarHistorico = async (idCursoMatriculado) => {
             doc.rect(130, startY, 66, 20, 'FD');
             doc.setFontSize(15);
             doc.setTextColor(0);
-            doc.text('MATRÍCULA II-2024', 135, startY + 7);
-            doc.text('ESPECIALIDAD MÚSICA', 133, startY + 14);
+            doc.text(`MATRÍCULA ${rows[0]?.ciclo || ''}`, 135, startY + 7);
+            doc.text(`Especialidad: ${estudiante.especialidad}`, 133, startY + 14);
         };
 
         // 👇 Dibuja los datos del estudiante

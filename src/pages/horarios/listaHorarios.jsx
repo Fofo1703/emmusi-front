@@ -7,7 +7,7 @@ import autoTable from 'jspdf-autotable';
 import Navbar from '../../components/navbar/navbar';
 import { Link } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
-
+import Swal from 'sweetalert2';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -18,11 +18,13 @@ export default function ListaHorarios() {
     const fetchHorarios = async () => {
         try {
             const data = await obtenerHorarios();
-            const horariosConId = data.map((item, index) => ({
-                ...item,
-                id: item.id || index,
-            }));
-            setRows(horariosConId);
+                const horariosConId = data.map((item, index) => ({
+                    ...item,
+                    id: item.id || index,
+
+                }));
+                setRows(horariosConId);
+
         } catch (error) {
             console.error('Error al obtener horarios:', error);
         }
@@ -36,10 +38,39 @@ export default function ListaHorarios() {
         const confirm = window.confirm('¿Estás seguro de que deseas eliminar este horario?');
         if (!confirm) return;
 
-        const status = await eliminarHorario(id);
-        if (status === 200) {
-            fetchHorarios();
-        }
+        // const status = await eliminarHorario(id);
+        // if (status === 200) {
+        //     fetchHorarios();
+        // }
+        eliminarHorario(id)
+            .then(async(response) => {
+                if (response.success) {
+                   await Swal.fire({
+                        icon: "success",
+                        title: response.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    fetchHorarios();
+
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: response.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+
+            })
+            .catch((error) => {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error al eliminar el horario",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            });
     };
 
     const filteredRows = useMemo(() => {
@@ -81,12 +112,12 @@ export default function ListaHorarios() {
     const columns = [
         { name: 'Curso', selector: row => row.curso, sortable: true, wrap: true, minWidth: '150px' },
         { name: 'Profesor', selector: row => row.profesor, sortable: true, wrap: true, minWidth: '150px' },
-        { name: 'Día', selector: row => row.dia, sortable: true, wrap: true, minWidth: '100px'},
-        { name: 'Hora Inicio', selector: row => row.horaInicio, wrap: true, minWidth: '130px'},
-        { name: 'Hora Fin', selector: row => row.horaFin, wrap: true, minWidth: '120px'},
-        { name: 'Ciclo', selector: row => row.ciclo, wrap: true,  minWidth: '130px' },
+        { name: 'Día', selector: row => row.dia, sortable: true, wrap: true, minWidth: '100px' },
+        { name: 'Hora Inicio', selector: row => row.horaInicio, wrap: true, minWidth: '130px' },
+        { name: 'Hora Fin', selector: row => row.horaFin, wrap: true, minWidth: '120px' },
+        { name: 'Ciclo', selector: row => row.ciclo, wrap: true, minWidth: '130px' },
         {
-            name: 'Acciones',  minWidth: '300px',
+            name: 'Acciones', minWidth: '300px',
             cell: row => (
                 <div className='flex flex-row gap-2 '>
                     <Link to={`/horarios/registro?id=${row.id}`}>

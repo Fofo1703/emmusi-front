@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { useSearchParams } from "react-router-dom";
 import { Button, Stack, Box, TextField } from '@mui/material';
 import { obtenerUnEstudiante } from '../../services/estudianteServices';
-import { obtenerCursosMatriculados, agregarNota } from '../../services/cursosMatriculadosServices';
+import { obtenerAusencias, agregarNota } from '../../services/notasAusenciasServices';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import Navbar from '../../components/navbar/navbar';
@@ -10,6 +10,7 @@ import DataTable from 'react-data-table-component';
 
 import NotesIcon from '@mui/icons-material/Notes';
 import SchoolIcon from '@mui/icons-material/School';
+import Swal from 'sweetalert2'
 
 
 import logo from '../../assets/images/logo emmusi.jpg'; // Asegúrate de importar tu imagen si usas Webpack/Vite
@@ -31,14 +32,14 @@ export default function NotasAusencias() {
     const [searchParams] = useSearchParams();
     const id = searchParams.get("id");
 
-    const fetchCursosMatriculados = async (id) => { // Recibir id como parámetro
+    const fetchAusencias = async (id) => { // Recibir id como parámetro
         try {
-            const data = await obtenerCursosMatriculados(id); // Pasar id a la función de consulta
-            const cursosMatriculados = data.map((item, index) => ({
+            const data = await obtenerAusencias(id); // Pasar id a la función de consulta
+            const ausencias = data.map((item, index) => ({
                 ...item,
                 id: item.id || index,
             }));
-            setRows(cursosMatriculados);
+            setRows(ausencias);
         } catch (error) {
             console.error('Error al obtener los cursos matriculados:', error);
         }
@@ -46,7 +47,7 @@ export default function NotasAusencias() {
 
     useEffect(() => {
         if (id) {
-            fetchCursosMatriculados(id); // Llamada correcta con id
+            fetchAusencias(id); // Llamada correcta con id
             obtenerUnEstudiante(id)
                 .then((data) => {
                     setEstudiante({
@@ -72,42 +73,126 @@ export default function NotasAusencias() {
     }, [rows, filterText]);
 
     const obtenerNota = async (idCursoMatriculado) => {
-        const input = prompt("Ingrese la nota (0-100) o 'Retiro Justificado' / 'No Oferta':");
+        const { value: nota, isConfirmed } = await Swal.fire({
+            title: 'Ingresar Nota',
+            input: 'text',
+            inputPlaceholder: "Ej: 95, Retiro Justificado, No Oferta",
+            showCancelButton: true,
+            confirmButtonText: 'Guardar',
+            cancelButtonText: 'Cancelar',
+            inputValidator: (value) => {
+                if (!value || value.trim() === "") {
+                    return "Este campo no puede estar vacío.";
+                }
 
-        if (input === null) return; // Usuario canceló
+                const notaLimpia = value.trim();
+                const frasesValidas = ["Retiro Justificado", "No Oferta"];
+                const esNumeroValido = !isNaN(notaLimpia) && Number(notaLimpia) >= 0 && Number(notaLimpia) <= 100;
+                const esFraseValida = frasesValidas.some(f => f.toLowerCase() === notaLimpia.toLowerCase());
 
-        const notaLimpia = input.trim();
+                if (!esNumeroValido && !esFraseValida) {
+                    return "Ingresa un número entre 0 y 100 o una frase válida: 'Retiro Justificado', 'No Oferta'";
+                }
 
-        // Verificar si es número entre 0 y 100
-        const esNumeroValido = !isNaN(notaLimpia) && Number(notaLimpia) >= 0 && Number(notaLimpia) <= 100;
+                return null;
+            }
+        });
 
-        // Verificar si es una frase válida (ignorando mayúsculas)
-        const frasesValidas = ["Retiro Justificado", "No Oferta"];
-        const esFraseValida = frasesValidas.some(f => f.toLowerCase() === notaLimpia.toLowerCase());
+        if (isConfirmed && nota) {
+            const notaLimpia = nota.trim();
+            agregarNota(idCursoMatriculado, notaLimpia)
+                .then((response) => {
 
-        if (!esNumeroValido && !esFraseValida) {
-            alert("Nota inválida. No cumple con los requerimientos.");
-            return;
+                    if (response.success) {
+                        fetchAusencias(id);
+                        Swal.fire({
+                            icon: "success",
+                            title: response.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: response.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+
+                })
+                .catch((error) => {
+                    Swal.fire({
+                        icon: "error",
+                        title: 'No se pudo guardar la nota.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
         }
-
-        await agregarNota(idCursoMatriculado, notaLimpia).then((response) => {
-            alert(response);
-        }).catch((error) => {
-            console.error("Error al agregar nota:", error);
-        })
 
 
     };
 
-const agregarAusencias = async (idCursoMatriculado) => {
+    const agregarAusencias = async (idCursoMatriculado) => {
+        const { value: formValues, isConfirmed } = await Swal.fire({
+            title: 'Agregar Ausencias',
+            html:
+                '<input id="justificadas" type="number" min="0" class="swal2-input" placeholder="Justificadas">' +
+                '<input id="injustificadas" type="number" min="0" class="swal2-input" placeholder="Injustificadas">',
+            showCancelButton: true,
+            confirmButtonText: 'Guardar',
+            cancelButtonText: 'Cancelar',
+            focusConfirm: false,
+            preConfirm: () => {
+                const justificadas = document.getElementById('justificadas').value;
+                const injustificadas = document.getElementById('injustificadas').value;
 
-}
+                if (justificadas === '' && injustificadas === '') {
+                    Swal.showValidationMessage('Debes ingresar al menos un campo');
+                    return;
+                }
+
+                if (
+                    (justificadas !== '' && (isNaN(justificadas) || justificadas < 0)) ||
+                    (injustificadas !== '' && (isNaN(injustificadas) || injustificadas < 0))
+                ) {
+                    Swal.showValidationMessage('Solo se permiten números positivos');
+                    return;
+                }
+
+                return {
+                    justificadas: justificadas !== '' ? Number(justificadas) : null,
+                    injustificadas: injustificadas !== '' ? Number(injustificadas) : null
+                };
+            }
+        });
+
+        if (isConfirmed && formValues) {
+            try {
+                console.log("Valores ingresados:", formValues);
+                // await tuFuncionGuardarAusencias(idCursoMatriculado, formValues.justificadas, formValues.injustificadas);
+                Swal.fire({
+                    icon: "success",
+                    title: "Ausencias guardadas exitosamente",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+            } catch (error) {
+                console.error('Error al guardar ausencias:', error);
+            }
+        } else {
+            console.log('Usuario canceló la operación');
+        }
+    };
 
 
     const columns = [
         { name: 'Curso', selector: row => row.curso, sortable: true, wrap: true, minWidth: '110px' },
-        { name: 'Horario', selector: row => row.horario, sortable: true, wrap: true, minWidth: '300px' },
-        { name: 'Profesor', selector: row => row.profesor, wrap: true, minWidth: '100px' },
+        { name: 'Calificación', selector: row => row.nota, sortable: true, wrap: true, minWidth: '150px' },
+        { name: 'Justificadas', selector: row => row.justificadas, wrap: true, minWidth: '140px' },
+        { name: 'Injustificadas', selector: row => row.injustificadas, wrap: true, minWidth: '160px' },
         {
             name: 'Acciones', minWidth: '380px',
             cell: row => (
@@ -139,14 +224,14 @@ const agregarAusencias = async (idCursoMatriculado) => {
 
     const exportExcel = async () => {
         const workbook = new ExcelJS.Workbook();
-        const sheet = workbook.addWorksheet('Matrícula');
+        const sheet = workbook.addWorksheet('Ausencias');
 
         // 🔽 Insertar dos filas vacías antes de todo
         sheet.addRow([]);
         sheet.addRow([]);
 
         // 🔶 Cuadro de matrícula (ahora en D3 y D4)
-        sheet.getCell('D3').value = `MATRÍCULA ${rows[0]?.ciclo || ''}`;
+        sheet.getCell('D3').value = `CURSO LECTIVO ${rows[0]?.ciclo || ''}`;
         sheet.getCell('D3').fill = {
             type: 'pattern',
             pattern: 'solid',
@@ -173,7 +258,7 @@ const agregarAusencias = async (idCursoMatriculado) => {
         sheet.addRow([]);
 
         // 🟧 Encabezado de la tabla (ahora en la fila 9)
-        const header = ['', '', 'Curso', 'Horario', 'Profesor'];
+        const header = ['', '', 'Curso', 'Calificación', 'Ausencias Justificadas', 'Ausencias Injustificadas'];
         const headerRow = sheet.addRow(header);
         headerRow.eachCell((cell, colNumber) => {
             if (colNumber >= 3) {
@@ -195,7 +280,7 @@ const agregarAusencias = async (idCursoMatriculado) => {
 
         // 📄 Filas de datos (también desplazadas)
         filteredRows.forEach((row) => {
-            const dataRow = sheet.addRow(['', '', row.curso, row.horario, row.profesor]);
+            const dataRow = sheet.addRow(['', '', row.curso, row.nota, row.justificadas, row.injustificadas]);
             dataRow.eachCell((cell, colNumber) => {
                 if (colNumber >= 3) {
                     cell.border = {
@@ -244,8 +329,8 @@ const agregarAusencias = async (idCursoMatriculado) => {
             doc.rect(130, startY, 66, 20, 'FD');
             doc.setFontSize(15);
             doc.setTextColor(0);
-            doc.text('MATRÍCULA II-2024', 135, startY + 7);
-            doc.text('ESPECIALIDAD MÚSICA', 133, startY + 14);
+            doc.text(`MATRÍCULA ${rows[0]?.ciclo || ''}`, 135, startY + 7);
+            doc.text(`Especialidad: ${estudiante.especialidad}`, 133, startY + 14);
         };
 
         // 👇 Dibuja los datos del estudiante
@@ -260,11 +345,12 @@ const agregarAusencias = async (idCursoMatriculado) => {
         const drawTabla = (startY) => {
             autoTable(doc, {
                 startY,
-                head: [['Curso', 'Horario', 'Profesor']],
+                head: [['Curso', 'Calificación', 'Ausencias Justificadas', 'Ausencias Injustificadas']],
                 body: filteredRows.map(row => [
                     row.curso,
-                    row.horario,
-                    row.profesor,
+                    row.nota,
+                    row.justificadas,
+                    row.injustificadas
                 ]),
                 styles: {
                     fontSize: 10,

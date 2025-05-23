@@ -6,7 +6,7 @@ const URL_CURSOS = URL + 'cursos/';
 const URL_HORARIOS = URL + 'horarios/';
 const URL_CURSOS_MATRICULADOS = URL + 'cursos-matriculados/';
 const URL_CURSOS_HISTORICOS = URL + 'cursos-historicos/';
-// const URL_SCHEDULES = URL + 'horarios/';
+const URL_AUSENCIAS = URL + 'ausencias/';
 
 export const VALIDAR_CREDENCIALES = URL_USUARIOS + 'validarCredenciales';
 
@@ -47,3 +47,9 @@ export const OBTENER_UN_CURSO_HISTORICO = URL_CURSOS_HISTORICOS + 'getCursoHisto
 export const INSERTAR_CURSO_HISTORICO = URL_CURSOS_HISTORICOS + 'insertCursoHistorico/';
 export const ACTUALIZAR_CURSO_HISTORICO = URL_CURSOS_HISTORICOS + 'updateCursoHistorico/';
 export const ELIMINAR_CURSO_HISTORICO = URL_CURSOS_HISTORICOS + 'deleteCursoHistorico/';
+
+export const OBTENER_AUSENCIAS = URL_AUSENCIAS + 'getAusencias/';
+export const OBTENER_UNA_AUSENCIA= URL_AUSENCIAS + 'getAusencia/';
+export const INSERTAR_AUSENCIA= URL_AUSENCIAS + 'insertAusencia';
+export const ACTUALIZAR_AUSENCIA = URL_AUSENCIAS + 'updateAusencia/';
+export const ELIMINAR_AUSENCIA = URL_AUSENCIAS + 'deleteAusencia/';

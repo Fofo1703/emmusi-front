@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import Swal from 'sweetalert2'
 import { OBTENER_PROFESORES, OBTENER_UN_PROFESOR, INSERTAR_PROFESOR, ACTUALIZAR_PROFESOR, ELIMINAR_PROFESOR } from "../assets/Api/apiLinks";
 
 export async function obtenerProfesores() {
@@ -18,7 +18,12 @@ export async function obtenerUnProfesor(id) {
     return await axios.request(options).then(function (response) {
         return response.data[0];
     }).catch(function (error) {
-        console.error(error);
+        Swal.fire({
+            icon: "error",
+            title: error.response?.data?.message,
+            showConfirmButton: false,
+            timer: 1500
+        });
     });
 }
 
@@ -66,6 +71,11 @@ export async function eliminarProfesor(id) {
         .request(options).then(function (response) {
             return response.status;
         }).catch(function (error) {
-            console.log(error);
+            Swal.fire({
+                icon: "error",
+                title: error.response?.data?.message,
+                showConfirmButton: false,
+                timer: 1500
+            });
         });
 }

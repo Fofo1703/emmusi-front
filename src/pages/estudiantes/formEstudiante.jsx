@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { insertarEstudiante, obtenerUnEstudiante, actualizarEstudiante, } from "../../services/estudianteServices";
 import InputConValidacion from "../../components/inputConValidacion";
 import Navbar from "../../components/navbar/navbar";
-
+import Swal from "sweetalert2";
 export default function FormEstudiante() {
   const [formData, setFormData] = useState({
     cedula: "",
@@ -31,7 +31,13 @@ export default function FormEstudiante() {
           });
         })
         .catch((error) => {
-          console.error("Error al obtener estudiante:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Error al obtener la informacion del estudiante",
+            showConfirmButton: false,
+            timer: 1500
+          });
+
         });
     } else {
       setFormData({
@@ -77,10 +83,31 @@ export default function FormEstudiante() {
     if (id) {
       actualizarEstudiante(id, formData)
         .then((response) => {
-          alert(response);
+          
+          if (response.success) {
+            Swal.fire({
+              icon: "success",
+              title: response.message,
+              showConfirmButton: false,
+              timer: 1500
+            });
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: response.message,
+              showConfirmButton: false,
+              timer: 1500
+            });
+          }
+
         })
         .catch((error) => {
-          console.error("Error al registrar el estudiante:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Error al actualizar el estudiante",
+            showConfirmButton: false,
+            timer: 1500
+          });
         });
     } else {
       insertarEstudiante(formData)
@@ -93,11 +120,29 @@ export default function FormEstudiante() {
               especialidad: "",
               subespecialidad: "",
             });
+            Swal.fire({
+              icon: "success",
+              title: response.message,
+              showConfirmButton: false,
+              timer: 1500
+            });
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: response.message,
+              showConfirmButton: false,
+              timer: 1500
+            });
           }
-          alert(response.message);
+
         })
         .catch((error) => {
-          console.error("Error al registrar el estudiante:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Error al registrar el estudiante",
+            showConfirmButton: false,
+            timer: 1500
+          });
         });
     }
   };
